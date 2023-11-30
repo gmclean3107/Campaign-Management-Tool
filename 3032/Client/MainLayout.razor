@@ -1,5 +1,26 @@
 ﻿@inherits LayoutComponentBase
+@using CampaignManagementTool.Client.Controls
 
-<main>
+<div class="min-h-full">
+  <nav class="border-b border-gray-200 bg-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 justify-between">
+          <div class="flex">
+              <div class="flex flex-shrink-0 items-center">
+                  <img class="hidden h-8 w-auto lg:block" src="images/logo-sep-2022.png" alt="Company Logo">
+              </div>
+              <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
+                  <NavMenu></NavMenu>
+              </div>
+          </div>
+          <div class="grow flex justify-end">
+              <LoginDisplay></LoginDisplay>
+          </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="py-10">
     @Body
-</main>
+  </div>
+</div>

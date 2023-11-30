@@ -1,0 +1,51 @@
+﻿@using CampaignManagementTool.Shared
+@using Microsoft.AspNetCore.Components.Forms
+@using CampaignManagementTool.Client.Components.Inputs
+@using System.Diagnostics.Contracts
+
+@if (Model != null)
+{
+    <EditForm @ref="_form" Model="@Model" OnSubmit="@Submit" FormName="Campaign">
+        <div class="grid grid-cols-2 gap-2">
+            <div class="col-span-full md:col-span-1">
+                <TextField Disabled="FormMode == FormMode.Edit" @bind-Value="Model.CampaignCode" Label="Campaign Code" />
+                <TextField @bind-Value="Model.AffiliateCode" Label="Affiliate Code" />
+                <TextField @bind-Value="Model.ProducerCode" Label="Producer Code" />
+                <CheckboxField @bind-Value="Model.RequiresApproval" Label="Requires Approval" />
+            </div>
+            <div class="col-span-full md:col-span-1">
+                <TextArea @bind-Value="Model.Rules" Label="Rules" />
+                <TextField @bind-Value="Model.RulesUrl" Label="Rules URL" />
+            </div>
+        </div>
+
+        <div class="mt-2 flex justify-center">
+            <Button type="submit">Save</Button>
+        </div>
+    </EditForm>
+}
+
+
+@code {
+
+    [Parameter]
+    public FormMode FormMode { get; set; } = FormMode.Add;
+
+    private EditForm? _form;
+
+    [Parameter]
+    public Campaign? Model { get; set; }
+
+    [Parameter]
+    public EventCallback<Campaign> OnSave { get; set; }
+
+
+    private async Task Submit()
+    {
+        if (OnSave.HasDelegate)
+        {
+            await OnSave.InvokeAsync();
+        }
+    }
+
+}

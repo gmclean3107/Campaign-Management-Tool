@@ -1,0 +1,12 @@
+﻿<tr>
+	@if (ChildContent != null)
+	{
+		@ChildContent
+	}
+</tr>
+
+@code {
+
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+}

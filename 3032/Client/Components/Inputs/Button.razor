@@ -1,0 +1,45 @@
+﻿@using System.Globalization
+<button type="@_type" @onclick="HandleClick" class="@getClass()">
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+</button>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string? _type = "button";
+
+    protected override void OnParametersSet()
+    {
+        if (AdditionalAttributes != null && AdditionalAttributes.TryGetValue("type", out var obj))
+        {
+            _type = Convert.ToString(obj, CultureInfo.InvariantCulture);
+        }
+
+
+        base.OnParametersSet();
+    }
+
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private string getClass()
+    {
+        return "rounded-md bg-primary-50 px-2.5 py-1.5 text-sm font-semibold text-primary-600 shadow-sm hover:bg-primary-100";
+    }
+
+}

@@ -1,0 +1,26 @@
+﻿
+@code {
+
+    [Parameter]
+    public string Label { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    protected string GetClass()
+    {
+        var c = "focus:outline-none block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-2";
+
+        if (Disabled)
+        {
+            c += " bg-gray-300";
+        }
+        else
+        {
+            c += " bg-white";
+        }
+
+        return c;
+    }
+
+}

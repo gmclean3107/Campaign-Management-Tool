@@ -1,0 +1,38 @@
+﻿@page "/NewCampaign"
+@using CampaignManagementTool.Client.Services;
+@using CampaignManagementTool.Shared;
+@using CampaignManagementTool.Client.Controls;
+@using CampaignManagementTool.Client.Components.Inputs
+
+@inject NavigationManager NavigationManager;
+@inject CampaignClientService CampaignService;
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+<header>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Create new Campaign</h1>
+    </div>
+</header>
+<main>
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <EditCampaignControl Model="@Model" OnSave="OnSave"></EditCampaignControl>
+    </div>
+</main>
+
+@code
+{
+    public Campaign? Model { get; set; }
+
+    protected override void OnInitialized() => Model ??= new Campaign();
+
+
+    private async Task OnSave()
+    {
+        var success = await CampaignService.AddAsync(Model);
+
+        if (success)
+        {
+            NavigationManager.NavigateTo("ListCampaigns");
+        }
+    }
+}

@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inherits InputBase
+
+<div class="relative flex items-start mt-2">
+    <div class="min-w-0 flex-1 text-sm leading-6">
+        <label for="@this.GetHashCode()" class="block text-sm font-medium leading-6 text-gray-900">@Label</label>
+    </div>
+    <div class="ml-3 flex h-6 items-center">
+        <InputCheckbox disabled="@Disabled" id="@this.GetHashCode()" @bind-Value="Value" class="@GetClass()"></InputCheckbox>
+    </div>
+</div>
+
+@code {
+
+    private bool _value;
+    [Parameter]
+    public bool Value
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<bool> ValueChanged { get; set; }
+
+
+}

@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using CampaignManagementTool.Client.Components.Inputs
+
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        <div class="flex items-center flex-cols gap-2">
+            <p>@context.User.Identity?.Name</p>
+            <Button OnClick="BeginLogOut">Log out</Button>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code{
+    public void BeginLogOut()
+    {
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+}

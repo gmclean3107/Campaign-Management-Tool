@@ -1,0 +1,49 @@
+﻿@page "/EditCampaign/{id}"
+@using CampaignManagementTool.Client.Services;
+@using CampaignManagementTool.Shared;
+@using CampaignManagementTool.Client.Controls;
+@using CampaignManagementTool.Client.Components.Inputs
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject ILogger<NewCampaignPage> Logger;
+@inject CampaignClientService CampaignService;
+@inject NavigationManager NavigationManager;
+
+
+<header>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Edit Campaign</h1>
+    </div>
+</header>
+<main>
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <EditCampaignControl Model="@Model" OnSave="OnSave" FormMode="FormMode.Edit"></EditCampaignControl>
+    </div>
+</main>
+
+@code
+{
+
+    [Parameter]
+    public string Id { get; set; }
+
+    public Campaign? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await CampaignService.GetByIdAsync(Id);
+
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task OnSave()
+    {
+        var success = await CampaignService.UpdateAsync(Model);
+
+        if (success)
+        {
+            NavigationManager.NavigateTo("ListCampaigns");
+        }
+    }
+}

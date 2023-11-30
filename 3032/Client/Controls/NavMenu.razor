@@ -1,0 +1,44 @@
+﻿@if (_navOptions != null)
+{
+    @foreach (var navLink in _navOptions)
+    {
+        <NavLink Href="@navLink.Href" Match="NavLinkMatch.All" ActiveClass="border-primary-500 text-primary-500 inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium" class="text-gray-500 hover:border-primary-300 hover:text-primary-700 inline-flex items-center hover:border-b-2 px-1 pt-1 text-sm font-medium">@navLink.Display</NavLink>
+    } 
+}
+
+@code {
+
+    public class NavOption
+    {
+        public string Display { get; set; }
+        public string Href { get; set; }
+    }
+
+    private List<NavOption> _navOptions;
+
+    protected override void OnInitialized()
+    {
+        _navOptions = new List<NavOption>();
+        
+        _navOptions.Add(new NavOption()
+        {
+            Display = "Dashboard",
+            Href = "/",
+        });
+        
+        _navOptions.Add(new NavOption()
+        {
+            Display = "Campaigns",
+            Href = "/ListCampaigns",
+        });
+        
+        _navOptions.Add(new NavOption()
+        {
+            Display = "New Campaign",
+            Href = "/NewCampaign",
+        });
+        
+        base.OnInitialized();
+    }
+
+}

@@ -1,0 +1,12 @@
+﻿<tbody class="divide-y divide-gray-200">
+	@if (ChildContent != null)
+	{
+		@ChildContent
+	}
+</tbody>
+
+@code {
+
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+}

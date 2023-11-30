@@ -1,0 +1,75 @@
+﻿@page "/ListCampaigns"
+
+@using CampaignManagementTool.Client.Components;
+@using CampaignManagementTool.Client.Components.Tables;
+@using CampaignManagementTool.Client.Services;
+@using CampaignManagementTool.Shared;
+@using CampaignManagementTool.Client.Components.Inputs
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject NavigationManager NavigationManager;
+@inject CampaignClientService CampaignService;
+
+<header>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">List Campaigns</h1>
+    </div>
+</header>
+<main>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mt-8 flow-root">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                    @if (_campaigns != null)
+                    {
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableHeader>Code</TableHeader>
+                                    <TableHeader>Affiliate</TableHeader>
+                                    <TableHeader>Requires Approval</TableHeader>
+                                    <TableHeader>Rules URL</TableHeader>
+                                    <TableHeader>Edit</TableHeader>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                @foreach (var c in _campaigns)
+                                {
+                                    <TableRow>
+                                        <TableColumn>@c.CampaignCode</TableColumn>
+                                        <TableColumn>@c.AffiliateCode</TableColumn>
+                                        <TableColumn>@c.RequiresApproval.ToString()</TableColumn>
+                                        <TableColumn>@c.RulesUrl</TableColumn>
+                                        <TableColumn><Button OnClick="() => OpenCampaign(c)">Edit</Button> </TableColumn>
+                                    </TableRow>
+                                }
+                            </TableBody>
+                        </Table>
+                    }
+                    else
+                    {
+                        <div class="flex justify-center">
+                            <LoadingSpinner></LoadingSpinner>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@code {
+    private List<Campaign>? _campaigns;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _campaigns = await CampaignService.GetAllAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private void OpenCampaign(Campaign c)
+    {
+        NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
+    }
+
+}

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.9" />
+        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.37.0" />
+        <PackageReference Include="Microsoft.Identity.Web" Version="2.16.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Client\CampaignManagementTool.Client.csproj" />
+        <ProjectReference Include="..\Shared\CampaignManagementTool.Shared.csproj" />
+
+    </ItemGroup>
+
+
+</Project>

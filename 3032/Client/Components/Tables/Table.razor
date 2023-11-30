@@ -1,0 +1,12 @@
+﻿<table class="min-w-full divide-y divide-gray-300">
+	@if (ChildContent != null)
+	{
+		@ChildContent
+	}
+</table>
+
+@code{
+
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+}

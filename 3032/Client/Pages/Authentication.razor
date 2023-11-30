@@ -1,0 +1,30 @@
+﻿@page "/authentication/{action}"
+
+@using CampaignManagementTool.Client.Components
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager NavigationManager;
+
+<div class="w-full flex flex-cols gap-3 justify-center text-3xl">
+    <LoadingSpinner></LoadingSpinner>
+    <RemoteAuthenticatorView Action="@Action">
+    </RemoteAuthenticatorView>
+</div>
+
+
+@code {
+    [Parameter] public string? Action { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        switch (Action)
+        {
+            case "logged-out":
+                NavigationManager.NavigateTo("/");
+                break;
+        }
+
+        base.OnParametersSet();
+    }
+
+}

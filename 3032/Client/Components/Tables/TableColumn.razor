@@ -1,0 +1,12 @@
+﻿<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+	@if (ChildContent != null)
+	{
+		@ChildContent
+	}
+</td>
+
+@code {
+
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+}

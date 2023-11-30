@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inherits InputBase
+
+<div class="mt-2">
+    <label for="@this.GetHashCode()" class="block text-sm font-medium leading-6 text-gray-900">@Label</label>
+    <InputTextArea disabled="@Disabled" id="@this.GetHashCode()" @bind-Value="Value" class="@GetClass()"></InputTextArea>
+</div>
+
+@code {
+
+    private string _value;
+    [Parameter]
+    public string Value
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            ValueChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+
+}
