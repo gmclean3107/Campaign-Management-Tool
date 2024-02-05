@@ -21,6 +21,7 @@
             <div class="mb-4">
                 <InputText @bind-Value="_searchQuery" Placeholder="Search Campaigns..." />
                 <Button OnClick="() => Search()" class="ml-2">Search</Button>
+                <Button OnClick="() => ResetSearch()" class="ml-2">Reset</Button>
             </div>
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -91,6 +92,12 @@
         }
 
         StateHasChanged();
+    }
+
+    private async Task ResetSearch()
+    {
+        _searchQuery = "";
+        _filteredCampaigns = _campaigns;
     }
 
 }
