@@ -22,7 +22,7 @@ namespace CampaignManagementTool.Server.Repositories
             return new CosmosRecord<Campaign>()
             {
                 Id = payload.CampaignCode,
-                paritionKey = "*",
+                PartitionKey = "*",
                 Payload = payload
             };
         }

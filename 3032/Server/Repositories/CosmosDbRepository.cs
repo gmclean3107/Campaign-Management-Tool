@@ -9,7 +9,7 @@ namespace CampaignManagementTool.Server.Repositories
         public string Id { get; set; }
 
         [JsonProperty(PropertyName = "partitionKey")]
-        public string paritionKey { get; set; }
+        public string PartitionKey { get; set; }
 
         [JsonProperty(PropertyName = "payload")]
         public T Payload { get; set; }
@@ -52,6 +52,21 @@ namespace CampaignManagementTool.Server.Repositories
             {
                 return null;
             }
+        }
+
+        public async Task<List<T>> CampaignSearch(string code) {
+            var query = new QueryDefinition("SELECT * FROM c WHERE CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)")
+                .WithParameter("@code", code);
+            var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
+
+            var results = new List<T>();
+
+            while (iterator.HasMoreResults) {
+                var response = await iterator.ReadNextAsync();
+                results.AddRange(response.Resource.Select(r => r.Payload));
+            }
+
+            return results;
         }
 
         public async Task<List<T>> GetAll()

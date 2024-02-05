@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using CampaignManagementTool.Server.Repositories.Interfaces;
 using CampaignManagementTool.Shared;
+using Microsoft.Azure.Cosmos;
 
 namespace CampaignManagementTool.Server.Repositories;
 
@@ -68,5 +69,11 @@ public class MockCampaignRepository : ICampaignRepository
             .RuleFor(c => c.RulesUrl, f => f.Internet.Url());
 
         return fakeData.Generate(20);
+    }
+
+    public Task<List<Campaign>> CampaignSearch(string code)
+    {
+
+        return null;
     }
 }

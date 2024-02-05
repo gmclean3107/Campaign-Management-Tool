@@ -18,6 +18,10 @@
 <main>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mt-8 flow-root">
+            <div class="mb-4">
+                <InputText @bind-Value="_searchQuery" Placeholder="Search Campaigns..." />
+                <Button OnClick="() => Search()" class="ml-2">Search</Button>
+            </div>
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     @if (_campaigns != null)
@@ -33,7 +37,7 @@
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                @foreach (var c in _campaigns)
+                                @foreach (var c in _filteredCampaigns)
                                 {
                                     <TableRow>
                                         <TableColumn>@c.CampaignCode</TableColumn>
@@ -60,16 +64,33 @@
 
 @code {
     private List<Campaign>? _campaigns;
+    private List<Campaign>? _filteredCampaigns;
+    private string _searchQuery = "";
 
     protected override async Task OnInitializedAsync()
     {
         _campaigns = await CampaignService.GetAllAsync();
+        _filteredCampaigns = _campaigns;
         await base.OnInitializedAsync();
     }
 
     private void OpenCampaign(Campaign c)
     {
         NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
+    }
+
+    private async Task Search()
+    {
+        if (string.IsNullOrWhiteSpace(_searchQuery))
+        {
+            _filteredCampaigns = _campaigns;
+        }
+        else
+        {
+            _filteredCampaigns = await CampaignService.CampaignSearchAsync(_searchQuery);
+        }
+
+        StateHasChanged();
     }
 
 }

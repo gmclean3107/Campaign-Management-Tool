@@ -27,6 +27,12 @@ public class CampaignClientService
         return campaign;
     }
 
+    public async Task<List<Campaign>> CampaignSearchAsync(string code) 
+    {
+        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Search?code={code}");
+        return (campaigns ?? Array.Empty<Campaign>()).ToList();
+    }
+
     public async Task<bool> AddAsync(Campaign model)
     {
         // var json = JsonSerializer.Serialize(model);

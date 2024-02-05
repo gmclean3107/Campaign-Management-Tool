@@ -32,6 +32,12 @@ public class CampaignController : Controller
         return Ok(await _service.GetById(id));
     }
 
+    [HttpGet("Search")]
+    public async Task<ActionResult> CampaignSearch([FromQuery] string code)
+    {
+        return Ok(await _service.CampaignSearch(code));
+    }
+
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]Campaign campaign)
     {
