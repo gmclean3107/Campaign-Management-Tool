@@ -76,4 +76,9 @@ public class MockCampaignRepository : ICampaignRepository
 
         return null;
     }
+
+    public Task<List<Campaign>> HandleFilter(int filter)
+    {
+        return null;
+    }
 }

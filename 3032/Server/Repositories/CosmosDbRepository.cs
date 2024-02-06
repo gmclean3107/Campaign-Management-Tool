@@ -69,6 +69,37 @@ namespace CampaignManagementTool.Server.Repositories
             return results;
         }
 
+        public async Task<List<T>> HandleFilter(int filter)
+        {
+            QueryDefinition query;
+
+            switch (filter)
+            {
+                case 1:
+                    query = new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = true");
+                    break;
+                case 2:
+                    query = new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = false");
+                    break;
+                default:
+                    query = new QueryDefinition("SELECT * FROM c");
+                    break;
+            }
+
+            
+            var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
+
+            var results = new List<T>();
+
+            while (iterator.HasMoreResults)
+            {
+                var response = await iterator.ReadNextAsync();
+                results.AddRange(response.Resource.Select(r => r.Payload));
+            }
+
+            return results;
+        }
+
         public async Task<List<T>> GetAll()
         {
             var query = new QueryDefinition($"SELECT * FROM c");

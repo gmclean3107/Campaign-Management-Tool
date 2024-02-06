@@ -9,4 +9,5 @@ public interface ICampaignService
     Task<Campaign?> GetById(string id);
     Task<List<Campaign>> CampaignSearch(string code);
     Task Update(string id,Campaign campaign);
+    Task<List<Campaign>> HandleFilter(int filter);
 }

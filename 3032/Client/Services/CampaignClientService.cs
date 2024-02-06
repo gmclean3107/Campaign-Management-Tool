@@ -33,6 +33,12 @@ public class CampaignClientService
         return (campaigns ?? Array.Empty<Campaign>()).ToList();
     }
 
+    public async Task<List<Campaign>> HandleFilterAsync(int filter)
+    {
+        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Filter?filter={filter}");
+        return (campaigns ?? Array.Empty<Campaign>()).ToList();
+    }
+
     public async Task<bool> AddAsync(Campaign model)
     {
         // var json = JsonSerializer.Serialize(model);

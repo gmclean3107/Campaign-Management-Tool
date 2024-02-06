@@ -38,6 +38,12 @@ public class CampaignController : Controller
         return Ok(await _service.CampaignSearch(code));
     }
 
+    [HttpGet("Filter")]
+    public async Task<ActionResult> HandleFilter([FromQuery] int filter) 
+    {
+        return Ok(await _service.HandleFilter(filter));
+    }
+
     [HttpPost]
     public async Task<ActionResult> Add([FromBody]Campaign campaign)
     {

@@ -34,6 +34,11 @@ public class CampaignService : ICampaignService
         return results;
     }
 
+    public async Task<List<Campaign>> HandleFilter(int filter) {
+        var results = await _repo.HandleFilter(filter);
+        return results;
+    }
+
     public async Task Update(string id, Campaign campaign)
     {
         await _repo.Update(id,campaign);
