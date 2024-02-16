@@ -54,45 +54,35 @@ namespace CampaignManagementTool.Server.Repositories
             }
         }
 
-        public async Task<List<T>> CampaignSearch(string code) {
-            var query = new QueryDefinition("SELECT * FROM c WHERE CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)")
-                .WithParameter("@code", code);
+        public async Task<List<T>> CampaignSearchFilter(string code, int filter) {
+
+            QueryDefinition query;
+            if (code == "")
+            {
+                query = filter switch
+                {
+                    1 => new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = true"),
+                    2 => new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = false"),
+                    _ => new QueryDefinition("SELECT * FROM c"),
+                };
+            }
+            else {
+                query = filter switch
+                {
+                    1 => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND c.payload.requiresApproval = true")
+                                                .WithParameter("@code", code),
+                    2 => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND c.payload.requiresApproval = false")
+                                                .WithParameter("@code", code),
+                    _ => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code))")
+                                                .WithParameter("@code", code),
+                };
+            }
+
             var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
 
             var results = new List<T>();
 
             while (iterator.HasMoreResults) {
-                var response = await iterator.ReadNextAsync();
-                results.AddRange(response.Resource.Select(r => r.Payload));
-            }
-
-            return results;
-        }
-
-        public async Task<List<T>> HandleFilter(int filter)
-        {
-            QueryDefinition query;
-
-            switch (filter)
-            {
-                case 1:
-                    query = new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = true");
-                    break;
-                case 2:
-                    query = new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = false");
-                    break;
-                default:
-                    query = new QueryDefinition("SELECT * FROM c");
-                    break;
-            }
-
-            
-            var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
-
-            var results = new List<T>();
-
-            while (iterator.HasMoreResults)
-            {
                 var response = await iterator.ReadNextAsync();
                 results.AddRange(response.Resource.Select(r => r.Payload));
             }

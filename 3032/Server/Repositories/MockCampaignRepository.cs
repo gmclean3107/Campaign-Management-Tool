@@ -71,14 +71,9 @@ public class MockCampaignRepository : ICampaignRepository
         return fakeData.Generate(20);
     }
 
-    public Task<List<Campaign>> CampaignSearch(string code)
-    {
-
-        return null;
-    }
-
-    public Task<List<Campaign>> HandleFilter(int filter)
+    public Task<List<Campaign>> CampaignSearchFilter(string code, int filter)
     {
         return null;
     }
+
 }

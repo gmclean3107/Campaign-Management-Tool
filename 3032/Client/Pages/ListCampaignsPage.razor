@@ -20,7 +20,7 @@
         <div class="mt-8 flow-root">
             <div class="mb-4">
                 <InputText @bind-Value="_searchQuery" Placeholder="Search Campaigns..." />
-                <Button OnClick="() => Search()" class="ml-2">Search</Button>
+                <Button OnClick="() => FilterSearch()" class="ml-2">Search</Button>
                 <Button OnClick="() => ResetSearch()" class="ml-2">Reset</Button>
 
                 <div class="dropdown ml-auto">
@@ -88,12 +88,14 @@
 @code {
     private List<Campaign>? _campaigns;
     private List<Campaign>? _filteredCampaigns;
+    private SearchFilters _searchFilter;
     private string _searchQuery = "";
     private string _selectedFilter = "filter0";
 
     protected override async Task OnInitializedAsync()
     {
         _campaigns = await CampaignService.GetAllAsync();
+        _searchFilter = new SearchFilters();
         _filteredCampaigns = _campaigns;
         await base.OnInitializedAsync();
     }
@@ -103,15 +105,30 @@
         NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
     }
 
-    private async Task Search()
+    private async Task FilterSearch()
     {
-        if (string.IsNullOrWhiteSpace(_searchQuery))
+        //Set filter
+        switch (_selectedFilter)
+        {
+            case "filter1":
+                _searchFilter.Filter = 1;
+                break;
+            case "filter2":
+                _searchFilter.Filter = 2;
+                break;
+            default:
+                _searchFilter.Filter = 0;
+                break;
+        }
+
+        if (string.IsNullOrWhiteSpace(_searchQuery) && _searchFilter.Filter.Equals(0))
         {
             _filteredCampaigns = _campaigns;
         }
         else
         {
-            _filteredCampaigns = await CampaignService.CampaignSearchAsync(_searchQuery);
+            _searchFilter.Search = _searchQuery;
+            _filteredCampaigns = await CampaignService.CampaignSearchFilterAsync(_searchFilter);
         }
 
         StateHasChanged();
@@ -124,26 +141,9 @@
         _filteredCampaigns = _campaigns;
     }
 
-    private async Task HandleFilterChange(ChangeEventArgs e, string filterID)
+    private void HandleFilterChange(ChangeEventArgs e, string filterID)
     {
         _selectedFilter = filterID;
-
-        int filter = 0;
-        switch (filterID)
-        {
-            case "filter1":
-                filter = 1;
-                break;
-            case "filter2":
-                filter = 2;
-                break;
-            default:
-                filter = 0;
-                break;
-        }
-
-        _filteredCampaigns = await CampaignService.HandleFilterAsync(filter);
-
     }
 
 }

@@ -27,15 +27,10 @@ public class CampaignClientService
         return campaign;
     }
 
-    public async Task<List<Campaign>> CampaignSearchAsync(string code) 
+    public async Task<List<Campaign>> CampaignSearchFilterAsync(SearchFilters searchFilter)
     {
-        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Search?code={code}");
-        return (campaigns ?? Array.Empty<Campaign>()).ToList();
-    }
-
-    public async Task<List<Campaign>> HandleFilterAsync(int filter)
-    {
-        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Filter?filter={filter}");
+        Console.WriteLine(searchFilter);
+        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Search?code={searchFilter.Search}&filter={searchFilter.Filter}");
         return (campaigns ?? Array.Empty<Campaign>()).ToList();
     }
 

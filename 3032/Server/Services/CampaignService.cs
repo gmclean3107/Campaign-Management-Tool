@@ -29,13 +29,8 @@ public class CampaignService : ICampaignService
         return await _repo.GetById(id);
     }
 
-    public async Task<List<Campaign>> CampaignSearch(string code) {
-        var results = await _repo.CampaignSearch(code);
-        return results;
-    }
-
-    public async Task<List<Campaign>> HandleFilter(int filter) {
-        var results = await _repo.HandleFilter(filter);
+    public async Task<List<Campaign>> CampaignSearchFilter(string code, int filter) {
+        var results = await _repo.CampaignSearchFilter(code, filter);
         return results;
     }
 
