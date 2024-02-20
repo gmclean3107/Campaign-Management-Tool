@@ -11,7 +11,9 @@
                 <TextField Disabled="FormMode == FormMode.Edit" @bind-Value="Model.CampaignCode" Label="Campaign Code" />
                 <TextField @bind-Value="Model.AffiliateCode" Label="Affiliate Code" />
                 <TextField @bind-Value="Model.ProducerCode" Label="Producer Code" />
+                <TextField @bind-Value="Model.ExpiryDays" Label="Expiry Days" />
                 <CheckboxField @bind-Value="Model.RequiresApproval" Label="Requires Approval" />
+                <CheckboxField @bind-Value="Model.isDeleted" Label="Deleted" />
             </div>
             <div class="col-span-full md:col-span-1">
                 <TextArea @bind-Value="Model.Rules" Label="Rules" />

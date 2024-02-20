@@ -17,4 +17,8 @@ public class Campaign
     public string? RulesUrl { get; set; }
     [JsonProperty("producerCode")]
     public string? ProducerCode { get; set; }
+    [JsonProperty("expiryDays")]
+    public string ExpiryDays { get; set; }
+    [JsonProperty("isDeleted")]
+    public bool isDeleted { get; set; }
 }

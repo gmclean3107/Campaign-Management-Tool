@@ -39,13 +39,21 @@
                                 <input type="radio" id="filter2" name="filter" @onchange='(e) => HandleFilterChange(e, "filter2")' />
                                 <label for="filter2">No Approval Required</label>
                             </div>
+                            <div class="form-check">
+                                <input type="radio" id="filter3" name="filter" @onchange='(e) => HandleFilterChange(e, "filter3")' />
+                                <label for="filter3">Active</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" id="filter4" name="filter" @onchange='(e) => HandleFilterChange(e, "filter4")' />
+                                <label for="filter4">Deleted</label>
+                            </div>
                             <!-- More filters can be added here -->
                         </form>
                     </div>
                 </div>
 
             </div>
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     @if (_campaigns != null)
                     {
@@ -56,6 +64,8 @@
                                     <TableHeader>Affiliate</TableHeader>
                                     <TableHeader>Requires Approval</TableHeader>
                                     <TableHeader>Rules URL</TableHeader>
+                                    <TableHeader>Expiry Date</TableHeader>
+                                    <TableHeader>Deleted</TableHeader>
                                     <TableHeader>Edit</TableHeader>
                                 </TableRow>
                             </TableHead>
@@ -67,6 +77,8 @@
                                         <TableColumn>@c.AffiliateCode</TableColumn>
                                         <TableColumn>@c.RequiresApproval.ToString()</TableColumn>
                                         <TableColumn>@c.RulesUrl</TableColumn>
+                                        <TableColumn>@c.ExpiryDays</TableColumn>
+                                        <TableColumn>@c.isDeleted</TableColumn>
                                         <TableColumn><Button OnClick="() => OpenCampaign(c)">Edit</Button> </TableColumn>
                                     </TableRow>
                                 }
@@ -91,12 +103,20 @@
     private SearchFilters _searchFilter;
     private string _searchQuery = "";
     private string _selectedFilter = "filter0";
+    private System.Timers.Timer _expiryCheckTimer;
 
     protected override async Task OnInitializedAsync()
     {
         _campaigns = await CampaignService.GetAllAsync();
         _searchFilter = new SearchFilters();
         _filteredCampaigns = _campaigns;
+
+        _expiryCheckTimer = new System.Timers.Timer();
+        _expiryCheckTimer.Interval = TimeSpan.FromSeconds(60).TotalMilliseconds;
+        _expiryCheckTimer.AutoReset = true;
+        _expiryCheckTimer.Elapsed += async (sender, e) => await CheckExpiryDates();
+        _expiryCheckTimer.Start();
+
         await base.OnInitializedAsync();
     }
 
@@ -115,6 +135,12 @@
                 break;
             case "filter2":
                 _searchFilter.Filter = 2;
+                break;
+            case "filter3":
+                _searchFilter.Filter = 3;
+                break;
+            case "filter4":
+                _searchFilter.Filter = 4;
                 break;
             default:
                 _searchFilter.Filter = 0;
@@ -144,6 +170,30 @@
     private void HandleFilterChange(ChangeEventArgs e, string filterID)
     {
         _selectedFilter = filterID;
+    }
+
+    private async Task CheckExpiryDates()
+    {
+        foreach (var campaign in _campaigns)
+        {
+            bool prevState = campaign.isDeleted;
+            int dateComp = DateTime.Compare(DateTime.Parse(campaign.ExpiryDays),DateTime.Now.Date);
+            Console.WriteLine(dateComp);
+            if (dateComp <= 0)
+            {
+                campaign.isDeleted = true;
+            }
+            else
+            {
+                campaign.isDeleted = false;
+            }
+            if (campaign.isDeleted != prevState)
+            {
+                await CampaignService.UpdateAsync(campaign);
+            }
+        }
+
+        StateHasChanged();
     }
 
 }

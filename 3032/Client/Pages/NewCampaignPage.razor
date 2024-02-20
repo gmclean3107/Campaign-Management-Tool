@@ -28,6 +28,16 @@
 
     private async Task OnSave()
     {
+        if (double.TryParse(Model.ExpiryDays, out double result) && !Double.IsNaN(result) && !Double.IsInfinity(result))
+        {
+            DateTime expiry = DateTime.Now.AddDays(result);
+            Model.ExpiryDays = expiry.ToString("dd/MM/yyyy");
+        }
+        else
+        {
+            Model.ExpiryDays = DateTime.Now.ToString("dd/MM/yyyy");
+        }
+
         var success = await CampaignService.AddAsync(Model);
 
         if (success)
