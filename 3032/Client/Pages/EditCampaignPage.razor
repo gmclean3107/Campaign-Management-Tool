@@ -33,6 +33,8 @@
     {
         Model = await CampaignService.GetByIdAsync(Id);
 
+        Model.ExpiryDays = DateTime.Parse(Model.ExpiryDays).Subtract(DateTime.Now.Date).TotalDays.ToString();
+
         await base.OnInitializedAsync();
     }
 
