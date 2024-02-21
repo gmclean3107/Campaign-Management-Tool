@@ -66,7 +66,9 @@ public class MockCampaignRepository : ICampaignRepository
             .RuleFor(c => c.AffiliateCode, f => f.Random.Replace("****-****-****"))
             .RuleFor(c => c.RequiresApproval, f => f.PickRandom(yesNo))
             .RuleFor(c => c.Rules, f => f.Lorem.Lines(1))
-            .RuleFor(c => c.RulesUrl, f => f.Internet.Url());
+            .RuleFor(c => c.RulesUrl, f => f.Internet.Url())
+            .RuleFor(c => c.ExpiryDays, f => f.Date.ToString())
+            .RuleFor(c => c.isDeleted, f => f.PickRandom(yesNo));
 
         return fakeData.Generate(20);
     }
