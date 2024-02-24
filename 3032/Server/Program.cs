@@ -5,6 +5,7 @@ using CampaignManagementTool.Server.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
 
 
@@ -20,6 +21,8 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<ICampaignService, CampaignService>();
 builder.Services.AddSingleton<ICampaignRepository, CosmosCampaignRepository>();
+
+builder.Services.AddHostedService<BackgroundTaskService>();
 
 var app = builder.Build();
 

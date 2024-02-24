@@ -104,6 +104,7 @@
     private string _searchQuery = "";
     private string _selectedFilter = "filter0";
     private System.Timers.Timer _expiryCheckTimer;
+    private bool isFiltered = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,9 +113,9 @@
         _filteredCampaigns = _campaigns;
 
         _expiryCheckTimer = new System.Timers.Timer();
-        _expiryCheckTimer.Interval = TimeSpan.FromSeconds(60).TotalMilliseconds;
+        _expiryCheckTimer.Interval = TimeSpan.FromSeconds(30).TotalMilliseconds;
         _expiryCheckTimer.AutoReset = true;
-        _expiryCheckTimer.Elapsed += async (sender, e) => await CheckExpiryDates();
+        _expiryCheckTimer.Elapsed += async (sender, e) => await ReloadPage();
         _expiryCheckTimer.Start();
 
         await base.OnInitializedAsync();
@@ -150,9 +151,11 @@
         if (string.IsNullOrWhiteSpace(_searchQuery) && _searchFilter.Filter.Equals(0))
         {
             _filteredCampaigns = _campaigns;
+            isFiltered = false;
         }
         else
         {
+            isFiltered = true;
             _searchFilter.Search = _searchQuery;
             _filteredCampaigns = await CampaignService.CampaignSearchFilterAsync(_searchFilter);
         }
@@ -172,28 +175,19 @@
         _selectedFilter = filterID;
     }
 
-    private async Task CheckExpiryDates()
+    private async Task ReloadPage()
     {
-        foreach (var campaign in _campaigns)
+        if (!isFiltered)
         {
-            bool prevState = campaign.isDeleted;
-            int dateComp = DateTime.Compare(DateTime.Parse(campaign.ExpiryDays),DateTime.Now.Date);
-            Console.WriteLine(dateComp);
-            if (dateComp <= 0)
-            {
-                campaign.isDeleted = true;
-            }
-            else
-            {
-                campaign.isDeleted = false;
-            }
-            if (campaign.isDeleted != prevState)
-            {
-                await CampaignService.UpdateAsync(campaign);
-            }
+            _filteredCampaigns = await CampaignService.GetAllAsync();
         }
-
+        else
+        {
+            await FilterSearch();    
+        }
+        Console.WriteLine("Page Reloaded");
         StateHasChanged();
     }
 
+    }
 }
