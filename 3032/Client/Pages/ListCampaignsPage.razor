@@ -101,7 +101,7 @@
                                         <TableColumn>@c.AffiliateCode</TableColumn>
                                         <TableColumn>@c.RequiresApproval.ToString()</TableColumn>
                                         <TableColumn>@c.RulesUrl</TableColumn>
-                                        <TableColumn>@c.ExpiryDays</TableColumn>
+                                        <TableColumn>@DateTime.ParseExact(c.ExpiryDays, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None).ToString("dd/MM/yyyy")</TableColumn>
                                         <TableColumn>@c.isDeleted</TableColumn>
                                         <TableColumn><Button OnClick="() => OpenCampaign(c)">Edit</Button> </TableColumn>
                                     </TableRow>

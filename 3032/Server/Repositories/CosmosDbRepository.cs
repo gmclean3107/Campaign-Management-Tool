@@ -58,6 +58,7 @@ namespace CampaignManagementTool.Server.Repositories
         public async Task<List<T>> CampaignSearchFilter(string code, int filter, int sort) {
             string filterString = "";
             string sortString = "";
+            string queryString = "";
             QueryDefinition query;
 
             filterString = filter switch
@@ -75,13 +76,15 @@ namespace CampaignManagementTool.Server.Repositories
                 2 => "ORDER BY c.id DESC",
                 3 => "ORDER BY c.payload.expiryDays ASC",
                 4 => "ORDER BY c.payload.expiryDays DESC",
-                _ => "1=1",
+                _ => "AND 1=1",
             };
 
             if (code != "")
             {
-                query = new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND " + filterString +" " + sortString)
+                queryString = "SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND " + filterString + " " + sortString;
+                query = new QueryDefinition(queryString)
                     .WithParameter("@code", code);
+                Console.WriteLine(query);
             }
             else 
             {

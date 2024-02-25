@@ -40,7 +40,7 @@ public class BackgroundTaskService : BackgroundService
         {
             bool prevState = campaign.isDeleted;
             int dateComp = DateTime.Compare(DateTime.Parse(campaign.ExpiryDays), DateTime.Now.Date);
-            Console.WriteLine(dateComp);
+
             if (dateComp <= 0)
             {
                 campaign.isDeleted = true;
