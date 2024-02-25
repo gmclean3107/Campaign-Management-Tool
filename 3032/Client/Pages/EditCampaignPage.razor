@@ -33,7 +33,7 @@
     {
         Model = await CampaignService.GetByIdAsync(Id);
 
-        Model.ExpiryDays = DateTime.ParseExact(Model.ExpiryDays, "dd/MM/yyyy", null).Subtract(DateTime.Now.Date).TotalDays.ToString();
+        Model.ExpiryDays = DateTime.Parse(Model.ExpiryDays).Subtract(DateTime.Now.Date).TotalDays.ToString();
 
         await base.OnInitializedAsync();
     }
@@ -44,11 +44,11 @@
         if (double.TryParse(Model.ExpiryDays, out double result) && !Double.IsNaN(result) && !Double.IsInfinity(result))
         {
             DateTime expiry = DateTime.Now.AddDays(result);
-            Model.ExpiryDays = expiry.ToString("dd/MM/yyyy");
+            Model.ExpiryDays = expiry.ToString("yyyy-MM-dd");
         }
         else
         {
-            Model.ExpiryDays = DateTime.Now.ToString("dd/MM/yyyy");
+            Model.ExpiryDays = DateTime.Now.ToString("yyyy-MM-dd");
         }
 
         var success = await CampaignService.UpdateAsync(Model);

@@ -9,4 +9,7 @@ public class SearchFilters
 
     [JsonProperty("filterCode")]
     public int Filter {  get; set; }
+
+    [JsonProperty("sortCode")]
+    public int Sort { get; set; }
 }

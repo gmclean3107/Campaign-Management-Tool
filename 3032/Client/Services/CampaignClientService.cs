@@ -29,8 +29,7 @@ public class CampaignClientService
 
     public async Task<List<Campaign>> CampaignSearchFilterAsync(SearchFilters searchFilter)
     {
-        Console.WriteLine(searchFilter);
-        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Search?code={searchFilter.Search}&filter={searchFilter.Filter}");
+        var campaigns = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Search?code={searchFilter.Search}&filter={searchFilter.Filter}&sort={searchFilter.Sort}");
         return (campaigns ?? Array.Empty<Campaign>()).ToList();
     }
 

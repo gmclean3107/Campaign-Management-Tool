@@ -22,6 +22,28 @@
                 <InputText @bind-Value="_searchQuery" Placeholder="Search Campaigns..." />
                 <Button OnClick="() => FilterSearch()" class="ml-2">Search</Button>
                 <Button OnClick="() => ResetSearch()" class="ml-2">Reset</Button>
+                <div class="flex justify-end">
+                    <div class="absolute ml-4">
+                        <div>
+                            <Button OnClick="() => ToggleDropdown()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Sort By
+                            </Button>
+                        </div>
+                        @if (isDropdownOpen)
+                        {
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                                <div class="py-2 flex flex-col space-y-2 items-center">
+                                    <Button OnClick='() => SortCampaigns("sort1")'>Alphabetical Asc.</Button>
+                                    <Button OnClick='() => SortCampaigns("sort2")'>Alphabetical Desc.</Button>
+                                    <Button OnClick='() => SortCampaigns("sort3")'>Expiry Date Asc.</Button>
+                                    <Button OnClick='() => SortCampaigns("sort4")'>Expiry Date Desc.</Button>
+                                    <!-- Add more sorting options as needed -->
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
 
                 <div class="dropdown ml-auto">
                     <label for="filterTitle"><strong>Filters</strong></label>
@@ -53,6 +75,8 @@
                 </div>
 
             </div>
+            
+
             <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     @if (_campaigns != null)
@@ -103,8 +127,10 @@
     private SearchFilters _searchFilter;
     private string _searchQuery = "";
     private string _selectedFilter = "filter0";
+    private string _sortString = "";
     private System.Timers.Timer _expiryCheckTimer;
     private bool isFiltered = false;
+    private bool isDropdownOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -148,7 +174,29 @@
                 break;
         }
 
-        if (string.IsNullOrWhiteSpace(_searchQuery) && _searchFilter.Filter.Equals(0))
+        //Set sort
+        switch (_sortString)
+        {
+            case "sort1":
+                _searchFilter.Sort = 1;
+                break;
+            case "sort2":
+                _searchFilter.Sort = 2;
+                break;
+            case "sort3":
+                _searchFilter.Sort = 3;
+                break;
+            case "sort4":
+                _searchFilter.Sort = 4;
+                break;
+            default:
+                _searchFilter.Sort = 0;
+                break;
+        }
+
+
+        //Set search
+        if (string.IsNullOrWhiteSpace(_searchQuery) && _searchFilter.Filter.Equals(0) && _searchFilter.Sort.Equals(0))
         {
             _filteredCampaigns = _campaigns;
             isFiltered = false;
@@ -168,6 +216,7 @@
         _searchQuery = "";
         _selectedFilter = "filter0";
         _filteredCampaigns = _campaigns;
+        _sortString = "";
     }
 
     private void HandleFilterChange(ChangeEventArgs e, string filterID)
@@ -189,5 +238,22 @@
         StateHasChanged();
     }
 
+    private void ToggleDropdown()
+    {
+        if (isDropdownOpen)
+        {
+            isDropdownOpen = false;    
+        }
+        else
+        {
+            isDropdownOpen = true;
+        }
+        StateHasChanged();
+    }
+
+    private void SortCampaigns(string sortInput)
+    {
+        _sortString = sortInput;
+        ToggleDropdown();
     }
 }

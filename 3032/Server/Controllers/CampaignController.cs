@@ -33,9 +33,9 @@ public class CampaignController : Controller
     }
 
     [HttpGet("Search")]
-    public async Task<ActionResult> CampaignSearchFilter([FromQuery] int filter, [FromQuery] string code = "")
+    public async Task<ActionResult> CampaignSearchFilter([FromQuery] int sort, [FromQuery] int filter, [FromQuery] string code = "")
     {
-        return Ok(await _service.CampaignSearchFilter(code, filter));
+        return Ok(await _service.CampaignSearchFilter(code, filter, sort));
     }
 
     [HttpPost]

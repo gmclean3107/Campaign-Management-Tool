@@ -73,7 +73,7 @@ public class MockCampaignRepository : ICampaignRepository
         return fakeData.Generate(20);
     }
 
-    public Task<List<Campaign>> CampaignSearchFilter(string code, int filter)
+    public Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort)
     {
         return null;
     }

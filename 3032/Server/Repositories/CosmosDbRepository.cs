@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using System.Drawing.Text;
 
 namespace CampaignManagementTool.Server.Repositories
 {
@@ -54,34 +55,37 @@ namespace CampaignManagementTool.Server.Repositories
             }
         }
 
-        public async Task<List<T>> CampaignSearchFilter(string code, int filter) {
-
+        public async Task<List<T>> CampaignSearchFilter(string code, int filter, int sort) {
+            string filterString = "";
+            string sortString = "";
             QueryDefinition query;
-            if (code == "")
+
+            filterString = filter switch
             {
-                query = filter switch
-                {
-                    1 => new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = true"),
-                    2 => new QueryDefinition("SELECT * FROM c WHERE c.payload.requiresApproval = false"),
-                    3 => new QueryDefinition("SELECT * FROM c WHERE c.payload.isDeleted = false"),
-                    4 => new QueryDefinition("SELECT * FROM c WHERE c.payload.isDeleted = true"),
-                    _ => new QueryDefinition("SELECT * FROM c"),
-                };
+                1 => "c.payload.requiresApproval = true",
+                2 => "c.payload.requiresApproval = false",
+                3 => "c.payload.isDeleted = false",
+                4 => "c.payload.isDeleted = true",
+                _ => "1=1",
+            };
+
+            sortString = sort switch
+            {
+                1 => "ORDER BY c.id ASC",
+                2 => "ORDER BY c.id DESC",
+                3 => "ORDER BY c.payload.expiryDays ASC",
+                4 => "ORDER BY c.payload.expiryDays DESC",
+                _ => "1=1",
+            };
+
+            if (code != "")
+            {
+                query = new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND " + filterString +" " + sortString)
+                    .WithParameter("@code", code);
             }
-            else {
-                query = filter switch
-                {
-                    1 => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND c.payload.requiresApproval = true")
-                                                .WithParameter("@code", code),
-                    2 => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND c.payload.requiresApproval = false")
-                                                .WithParameter("@code", code),
-                    3 => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND c.payload.isDeleted = false")
-                                                .WithParameter("@code", code),
-                    4 => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND c.payload.isDeleted = true")
-                                                .WithParameter("@code", code),
-                    _ => new QueryDefinition("SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code))")
-                                                .WithParameter("@code", code),
-                };
+            else 
+            {
+                query = new QueryDefinition("SELECT * FROM c WHERE " + filterString + " " + sortString);
             }
 
             var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
