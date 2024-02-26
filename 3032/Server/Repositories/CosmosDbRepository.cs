@@ -84,7 +84,6 @@ namespace CampaignManagementTool.Server.Repositories
                 queryString = "SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND " + filterString + " " + sortString;
                 query = new QueryDefinition(queryString)
                     .WithParameter("@code", code);
-                Console.WriteLine(query);
             }
             else 
             {
