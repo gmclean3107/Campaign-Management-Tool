@@ -1,6 +1,9 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using System.Drawing.Text;
+using CsvHelper;
+using Azure;
+using System.Globalization;
 
 namespace CampaignManagementTool.Server.Repositories
 {
@@ -55,7 +58,8 @@ namespace CampaignManagementTool.Server.Repositories
             }
         }
 
-        public async Task<List<T>> CampaignSearchFilter(string code, int filter, int sort) {
+        public async Task<List<T>> CampaignSearchFilter(string code, int filter, int sort)
+        {
             string filterString = "";
             string sortString = "";
             string queryString = "";
@@ -85,7 +89,7 @@ namespace CampaignManagementTool.Server.Repositories
                 query = new QueryDefinition(queryString)
                     .WithParameter("@code", code);
             }
-            else 
+            else
             {
                 query = new QueryDefinition("SELECT * FROM c WHERE " + filterString + " " + sortString);
             }
@@ -94,7 +98,8 @@ namespace CampaignManagementTool.Server.Repositories
 
             var results = new List<T>();
 
-            while (iterator.HasMoreResults) {
+            while (iterator.HasMoreResults)
+            {
                 var response = await iterator.ReadNextAsync();
                 results.AddRange(response.Resource.Select(r => r.Payload));
             }
@@ -129,5 +134,38 @@ namespace CampaignManagementTool.Server.Repositories
             await _container.ReplaceItemAsync(cosmosRecord, id, new PartitionKey("*"));
         }
 
+        public async Task<List<T>> ExportToCsv(bool isSingleCampaign)
+        {
+            var response = GetAll().Result;
+            if (isSingleCampaign == false)
+            {
+                
+                try
+                {
+                    if (response != null)
+                    {
+                        using (var writer = new StreamWriter("tests/singleCampaign.csv"))
+                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                        {
+                           
+
+                            csv.WriteRecords(response);
+                            
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Campaign with id not found.");
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions as needed
+                    Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+                }
+            }
+            return response;
+        }
     }
 }

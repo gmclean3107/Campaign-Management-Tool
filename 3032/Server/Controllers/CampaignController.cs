@@ -53,4 +53,10 @@ public class CampaignController : Controller
 
         return Ok();
     }
+
+    [HttpGet("Export")]
+    public async Task<ActionResult> ExportToCsv([FromQuery] bool isSingleCampaign)
+    {
+        return Ok(await _service.ExportToCsv(isSingleCampaign));
+    }
 }

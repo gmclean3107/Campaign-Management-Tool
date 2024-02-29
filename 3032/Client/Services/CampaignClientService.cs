@@ -51,4 +51,13 @@ public class CampaignClientService
 
         return result.IsSuccessStatusCode;
     }
+
+
+    public async Task<List<Campaign>> ExportToCsvAsync(bool isSingleCampaign)
+    {
+        
+        var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Export?isSinglular={isSingleCampaign}");
+
+        return (result ?? Array.Empty<Campaign>()).ToList();
+    }
 }

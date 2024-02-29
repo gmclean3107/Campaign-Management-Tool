@@ -38,4 +38,11 @@ public class CampaignService : ICampaignService
     {
         await _repo.Update(id,campaign);
     }
+
+    public async Task<List<Campaign>> ExportToCsv(bool isSingleCampaign)
+    {
+        var result = await _repo.ExportToCsv(isSingleCampaign);
+
+        return result;
+    }
 }

@@ -78,4 +78,8 @@ public class MockCampaignRepository : ICampaignRepository
         return null;
     }
 
+    public Task<List<Campaign>> ExportToCsv(bool isSingleCampaign)
+    {
+        return null;
+    }
 }
