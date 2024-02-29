@@ -53,11 +53,17 @@ public class CampaignClientService
     }
 
 
-    public async Task<List<Campaign>> ExportToCsvAsync(bool isSingleCampaign)
+    public async Task<List<Campaign>> ExportToCsvAsync()
     {
         
-        var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Export?isSinglular={isSingleCampaign}");
+        var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Export");
 
+        return (result ?? Array.Empty<Campaign>()).ToList();
+    }
+
+    public async Task<List<Campaign>> ExportToCsvFilteredAsync(SearchFilters searchFilter) 
+    {
+        var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/ExportFiltered?code={searchFilter.Search}&filter={searchFilter.Filter}&sort={searchFilter.Sort}");
         return (result ?? Array.Empty<Campaign>()).ToList();
     }
 }

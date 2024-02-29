@@ -78,7 +78,12 @@ public class MockCampaignRepository : ICampaignRepository
         return null;
     }
 
-    public Task<List<Campaign>> ExportToCsv(bool isSingleCampaign)
+    public Task<List<Campaign>> ExportToCsv()
+    {
+        return null;
+    }
+
+    public Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort)
     {
         return null;
     }

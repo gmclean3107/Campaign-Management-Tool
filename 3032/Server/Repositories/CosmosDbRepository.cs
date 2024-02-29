@@ -134,17 +134,15 @@ namespace CampaignManagementTool.Server.Repositories
             await _container.ReplaceItemAsync(cosmosRecord, id, new PartitionKey("*"));
         }
 
-        public async Task<List<T>> ExportToCsv(bool isSingleCampaign)
+        public async Task<List<T>> ExportToCsv()
         {
             var response = GetAll().Result;
-            if (isSingleCampaign == false)
-            {
                 
                 try
                 {
                     if (response != null)
                     {
-                        using (var writer = new StreamWriter("tests/singleCampaign.csv"))
+                        using (var writer = new StreamWriter("tests/AllCampaigns.csv"))
                         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                         {
                            
@@ -164,7 +162,34 @@ namespace CampaignManagementTool.Server.Repositories
                     // Handle exceptions as needed
                     Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
                 }
-            }
+            return response;
+        }
+
+        public async Task<List<T>> ExportToCsvFiltered(string code, int filter, int sort)
+        {
+            var response = CampaignSearchFilter(code, filter, sort).Result;
+
+                try
+                {
+                    if (response != null)
+                    {
+                        using (var writer = new StreamWriter("tests/FilteredCampaigns.csv"))
+                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                        {
+                            csv.WriteRecords(response);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Campaign with id not found.");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions as needed
+                    Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+                }
             return response;
         }
     }

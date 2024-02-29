@@ -120,7 +120,7 @@
             <div>
                 
 
-                <Button OnClick="() => ExportToCsvButton(false)" >
+                <Button OnClick="() => ExportToCsvButton()" >
                     Export to CSV
                 </Button>
 
@@ -160,9 +160,16 @@
         NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
     }
 
-    private async void ExportToCsvButton(bool isSingleCampaign)
+    private async void ExportToCsvButton()
     {
-        var response = await CampaignService.ExportToCsvAsync(isSingleCampaign);
+        if (!isFiltered)
+        {
+            var response = await CampaignService.ExportToCsvAsync();
+        }
+        else
+        {
+            var response = await CampaignService.ExportToCsvFilteredAsync(_searchFilter);    
+        }
     }
 
     private async Task FilterSearch()

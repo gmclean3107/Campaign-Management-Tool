@@ -55,8 +55,14 @@ public class CampaignController : Controller
     }
 
     [HttpGet("Export")]
-    public async Task<ActionResult> ExportToCsv([FromQuery] bool isSingleCampaign)
+    public async Task<ActionResult> ExportToCsv()
     {
-        return Ok(await _service.ExportToCsv(isSingleCampaign));
+        return Ok(await _service.ExportToCsv());
+    }
+
+    [HttpGet("ExportFiltered")]
+    public async Task<ActionResult> ExportToCsv([FromQuery] int sort, [FromQuery] int filter, [FromQuery] string code = "")
+    {
+        return Ok(await _service.ExportToCsvFiltered(code, filter, sort));
     }
 }
