@@ -171,13 +171,64 @@ public class MockCampaignRepository : ICampaignRepository
 
     public Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort)
     {
-        return null;
+        var response = CampaignSearchFilter(code, filter, sort).Result;
+
+        try
+        {
+            if (response != null)
+            {
+                using (var writer = new StreamWriter("CsvExports/FilteredCampaigns.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(response);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Campaign with id not found.");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions as needed
+            Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+        }
+        return Task.FromResult(response);
     }
 
 
 
     public Task<Campaign?> ExportToCsvSingle(string id)
     {
-        return null;
+        var response = GetById(id);
+
+        try
+        {
+            if (response != null)
+            {
+                using (var writer = new StreamWriter("CsvExports/SingleCampaign.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteHeader<Campaign>();
+                    csv.NextRecord();
+
+                    csv.WriteRecord(response.Result);
+                }
+                return response;
+            }
+            else
+            {
+                Console.WriteLine($"Campaign with id not found.");
+                return null;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions as needed
+            Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+            return null;
+        }
     }
 }
