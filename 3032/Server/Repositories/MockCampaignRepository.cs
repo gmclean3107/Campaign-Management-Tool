@@ -82,36 +82,73 @@ public class MockCampaignRepository : ICampaignRepository
         {
             if (code != "" && (campaign.CampaignCode.Contains(code) || campaign.AffiliateCode.Contains(code) || campaign.ProducerCode.Contains(code)))
             {
-                filteredCampaigns.Add(campaign);
-            }
-            
-            if (filter != 0) {
-                switch (filter)
+                if (filter != 0)
                 {
-                    case 1:
-                        if (campaign.RequiresApproval == true) {
-                            filteredCampaigns.Add(campaign);
-                        }
-                        break;
-                    case 2:
-                        if (campaign.RequiresApproval == false)
-                        {
-                            filteredCampaigns.Add(campaign);
-                        }
-                        break;
-                    case 3:
-                        if (campaign.isDeleted == false)
-                        {
-                            filteredCampaigns.Add(campaign);
-                        }
-                        break;
-                    case 4:
-                        if (campaign.isDeleted == true)
-                        {
-                            filteredCampaigns.Add(campaign);
-                        }
-                        break;
-                    default: break;
+                    switch (filter)
+                    {
+                        case 1:
+                            if (campaign.RequiresApproval == true)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        case 2:
+                            if (campaign.RequiresApproval == false)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        case 3:
+                            if (campaign.isDeleted == false)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        case 4:
+                            if (campaign.isDeleted == true)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        default: break;
+                    }
+                }
+                else
+                {
+                    filteredCampaigns.Add(campaign);
+                }
+            }
+            else {
+                if (filter != 0)
+                {
+                    switch (filter)
+                    {
+                        case 1:
+                            if (campaign.RequiresApproval == true)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        case 2:
+                            if (campaign.RequiresApproval == false)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        case 3:
+                            if (campaign.isDeleted == false)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        case 4:
+                            if (campaign.isDeleted == true)
+                            {
+                                filteredCampaigns.Add(campaign);
+                            }
+                            break;
+                        default: break;
+                    }
                 }
             }
         }
