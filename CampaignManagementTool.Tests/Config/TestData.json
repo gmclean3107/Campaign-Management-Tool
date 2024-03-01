@@ -1,0 +1,203 @@
+[
+  {
+    "campaignCode": "camp001",
+    "affiliateCode": "aff001",
+    "requiresApproval": true,
+    "rules": "Rule 1",
+    "rulesUrl": "https://example.com/rules1",
+    "producerCode": "prod001",
+    "expiryDays": "2024-03-15",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp002",
+    "affiliateCode": "aff002",
+    "requiresApproval": false,
+    "rules": "Rule 2",
+    "rulesUrl": "https://example.com/rules2",
+    "producerCode": "prod002",
+    "expiryDays": "2024-04-20",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp003",
+    "affiliateCode": "aff003",
+    "requiresApproval": true,
+    "rules": "Rule 3",
+    "rulesUrl": "https://example.com/rules3",
+    "producerCode": "prod003",
+    "expiryDays": "2024-05-10",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp004",
+    "affiliateCode": "aff004",
+    "requiresApproval": false,
+    "rules": "Rule 4",
+    "rulesUrl": "https://example.com/rules4",
+    "producerCode": "prod004",
+    "expiryDays": "2024-06-25",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp005",
+    "affiliateCode": "aff005",
+    "requiresApproval": true,
+    "rules": "Rule 5",
+    "rulesUrl": "https://example.com/rules5",
+    "producerCode": "prod005",
+    "expiryDays": "2024-07-30",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp006",
+    "affiliateCode": "aff006",
+    "requiresApproval": false,
+    "rules": "Rule 6",
+    "rulesUrl": "https://example.com/rules6",
+    "producerCode": "prod006",
+    "expiryDays": "2024-08-05",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp007",
+    "affiliateCode": "aff007",
+    "requiresApproval": true,
+    "rules": "Rule 7",
+    "rulesUrl": "https://example.com/rules7",
+    "producerCode": "prod007",
+    "expiryDays": "2024-09-15",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp008",
+    "affiliateCode": "aff008",
+    "requiresApproval": false,
+    "rules": "Rule 8",
+    "rulesUrl": "https://example.com/rules8",
+    "producerCode": "prod008",
+    "expiryDays": "2024-10-20",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp009",
+    "affiliateCode": "aff009",
+    "requiresApproval": true,
+    "rules": "Rule 9",
+    "rulesUrl": "https://example.com/rules9",
+    "producerCode": "prod009",
+    "expiryDays": "2024-11-10",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp010",
+    "affiliateCode": "aff010",
+    "requiresApproval": false,
+    "rules": "Rule 10",
+    "rulesUrl": "https://example.com/rules10",
+    "producerCode": "prod010",
+    "expiryDays": "2024-12-25",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp011",
+    "affiliateCode": "aff011",
+    "requiresApproval": true,
+    "rules": "Rule 11",
+    "rulesUrl": "https://example.com/rules11",
+    "producerCode": "prod011",
+    "expiryDays": "2025-01-15",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp012",
+    "affiliateCode": "aff012",
+    "requiresApproval": false,
+    "rules": "Rule 12",
+    "rulesUrl": "https://example.com/rules12",
+    "producerCode": "prod012",
+    "expiryDays": "2025-02-05",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp013",
+    "affiliateCode": "aff013",
+    "requiresApproval": true,
+    "rules": "Rule 13",
+    "rulesUrl": "https://example.com/rules13",
+    "producerCode": "prod013",
+    "expiryDays": "2025-03-20",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp014",
+    "affiliateCode": "aff014",
+    "requiresApproval": false,
+    "rules": "Rule 14",
+    "rulesUrl": "https://example.com/rules14",
+    "producerCode": "prod014",
+    "expiryDays": "2025-04-15",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp015",
+    "affiliateCode": "aff015",
+    "requiresApproval": true,
+    "rules": "Rule 15",
+    "rulesUrl": "https://example.com/rules15",
+    "producerCode": "prod015",
+    "expiryDays": "2025-05-30",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp016",
+    "affiliateCode": "aff016",
+    "requiresApproval": false,
+    "rules": "Rule 16",
+    "rulesUrl": "https://example.com/rules16",
+    "producerCode": "prod016",
+    "expiryDays": "2025-06-10",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp017",
+    "affiliateCode": "aff017",
+    "requiresApproval": true,
+    "rules": "Rule 17",
+    "rulesUrl": "https://example.com/rules17",
+    "producerCode": "prod017",
+    "expiryDays": "2025-07-15",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp018",
+    "affiliateCode": "aff018",
+    "requiresApproval": false,
+    "rules": "Rule 18",
+    "rulesUrl": "https://example.com/rules18",
+    "producerCode": "prod018",
+    "expiryDays": "2025-08-20",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp019",
+    "affiliateCode": "aff019",
+    "requiresApproval": true,
+    "rules": "Rule 19",
+    "rulesUrl": "https://example.com/rules19",
+    "producerCode": "prod019",
+    "expiryDays": "2025-09-25",
+    "isDeleted": false
+  },
+  {
+    "campaignCode": "camp020",
+    "affiliateCode": "aff020",
+    "requiresApproval": false,
+    "rules": "Rule 20",
+    "rulesUrl": "https://example.com/rules20",
+    "producerCode": "prod020",
+    "expiryDays": "2025-10-30",
+    "isDeleted": false
+  }
+]
+

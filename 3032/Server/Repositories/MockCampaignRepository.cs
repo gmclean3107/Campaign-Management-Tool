@@ -2,6 +2,7 @@
 using CampaignManagementTool.Server.Repositories.Interfaces;
 using CampaignManagementTool.Shared;
 using Microsoft.Azure.Cosmos;
+using Newtonsoft.Json;
 
 namespace CampaignManagementTool.Server.Repositories;
 
@@ -53,24 +54,20 @@ public class MockCampaignRepository : ICampaignRepository
         }
     }
 
-    /// <summary>
-    /// Use the Bogus Library to generate some fake data
-    /// </summary>
-    /// <returns></returns>
-    private static List<Campaign> GetFakeData()
+ 
+    public static List<Campaign> GetFakeData()
     {
-        var yesNo = new List<bool> { true, false };
+        // Path to the JSON file containing test data
+        string testDataFilePath = "Config/TestData.json";
 
-        var fakeData = new Faker<Campaign>()
-            .RuleFor(c => c.CampaignCode, f => f.Random.Replace("###?#**"))
-            .RuleFor(c => c.AffiliateCode, f => f.Random.Replace("****-****-****"))
-            .RuleFor(c => c.RequiresApproval, f => f.PickRandom(yesNo))
-            .RuleFor(c => c.Rules, f => f.Lorem.Lines(1))
-            .RuleFor(c => c.RulesUrl, f => f.Internet.Url())
-            .RuleFor(c => c.ExpiryDays, f => f.Date.ToString())
-            .RuleFor(c => c.isDeleted, f => f.PickRandom(yesNo));
+        // Read JSON file content
+        string jsonData = File.ReadAllText(testDataFilePath);
 
-        return fakeData.Generate(20);
+        // Deserialize JSON to List<Campaign>
+        List<Campaign> campaigns = JsonConvert.DeserializeObject<List<Campaign>>(jsonData);
+
+
+        return campaigns;
     }
 
     public Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort)

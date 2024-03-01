@@ -21,13 +21,18 @@ namespace CampaignManagementTool.Tests
         [Test]
         public async Task GetAll_Returns_All_Campaigns()
         {
-
-            // Act
             var campaigns = await _campaignRepository.GetAll();
 
-            // Assert
             Assert.That(campaigns != null);
-            Assert.That(20 == campaigns.Count); // Assuming 20 fake campaigns are generated
+            Assert.That(20 == campaigns.Count);
+            int count = 0;
+            string formattedNumber = "";
+            foreach (var campaign in campaigns)
+            {
+                count++;
+                formattedNumber = count.ToString("D3");
+                Assert.That(campaign.CampaignCode == "camp" + formattedNumber);
+            }
         }
 
         [Test]
@@ -44,11 +49,9 @@ namespace CampaignManagementTool.Tests
                 isDeleted = false
             };
 
-            // Act
             await _campaignRepository.Add(newCampaign);
             var retrievedCampaign = await _campaignRepository.GetById("NEWCAMPAIGN");
 
-            // Assert
             Assert.That(retrievedCampaign != null);
             Assert.That(newCampaign.CampaignCode == retrievedCampaign.CampaignCode);
         }
@@ -68,11 +71,9 @@ namespace CampaignManagementTool.Tests
                 isDeleted = existingCampaign.isDeleted
             };
 
-            // Act
             await _campaignRepository.Update(existingCampaign.CampaignCode, updatedCampaign);
             var retrievedCampaign = await _campaignRepository.GetById(existingCampaign.CampaignCode);
 
-            // Assert
             Assert.That(retrievedCampaign != null);
             Assert.That(updatedCampaign.RequiresApproval == retrievedCampaign.RequiresApproval);
         }
