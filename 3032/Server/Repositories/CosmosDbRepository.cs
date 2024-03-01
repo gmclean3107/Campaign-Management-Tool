@@ -142,7 +142,7 @@ namespace CampaignManagementTool.Server.Repositories
                 {
                     if (response != null)
                     {
-                        using (var writer = new StreamWriter("tests/AllCampaigns.csv"))
+                        using (var writer = new StreamWriter("CsvExports/AllCampaigns.csv"))
                         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                         {
                            
@@ -173,7 +173,7 @@ namespace CampaignManagementTool.Server.Repositories
                 {
                     if (response != null)
                     {
-                        using (var writer = new StreamWriter("tests/FilteredCampaigns.csv"))
+                        using (var writer = new StreamWriter("CsvExports/FilteredCampaigns.csv"))
                         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                         {
                             csv.WriteRecords(response);
@@ -201,7 +201,7 @@ namespace CampaignManagementTool.Server.Repositories
             {
                 if (response != null)
                 {
-                    using (var writer = new StreamWriter("tests/SingleCampaign.csv"))
+                    using (var writer = new StreamWriter("CsvExports/SingleCampaign.csv"))
                     using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                     {
                         csv.WriteHeader<T>();

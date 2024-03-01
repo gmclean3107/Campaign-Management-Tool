@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -19,10 +19,6 @@
         <ProjectReference Include="..\Client\CampaignManagementTool.Client.csproj" />
         <ProjectReference Include="..\Shared\CampaignManagementTool.Shared.csproj" />
 
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="tests\" />
     </ItemGroup>
 
 

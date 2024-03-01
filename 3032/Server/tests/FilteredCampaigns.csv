@@ -1,8 +1,0 @@
-CampaignCode,AffiliateCode,RequiresApproval,Rules,RulesUrl,ProducerCode,ExpiryDays,isDeleted
-CAMPAIGN,12,True,No rules cus we cool,www.insurify.com,12,2024-02-20,True
-CAM-70,AFF-10,False,Rules,www.google.com,PRO-500-,2024-09-12,False
-CAM-15,AFF-15,False,My Rules,www.google.com,PRO-15,2024-02-20,True
-CAM-14,AFF-14,False,My Rule,www.google.com,PRO-14,2024-02-20,True
-CAM-13,AFF-14,False,My Rule,www.google.com,PRO-13,2024-02-20,True
-CAM-12,AFF-12,False,My Rules,www.google.com,PRO-13,2024-02-29,True
-CAM-10,AFF-123,True,My Rules v2,www.google.com,PRO-10,2024-02-27,True
