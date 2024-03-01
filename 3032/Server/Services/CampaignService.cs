@@ -51,4 +51,10 @@ public class CampaignService : ICampaignService
         var results = await _repo.ExportToCsvFiltered(code, filter, sort);
         return results;
     }
+
+    public async Task<Campaign?> ExportCsvSingle(string id)
+    {
+        var result = await _repo.ExportToCsvSingle(id);
+        return result;
+    }
 }

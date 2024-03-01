@@ -192,5 +192,39 @@ namespace CampaignManagementTool.Server.Repositories
                 }
             return response;
         }
+
+        public Task<T?> ExportToCsvSingle(string id) 
+        {
+            var response = GetById(id);
+
+            try
+            {
+                if (response != null)
+                {
+                    using (var writer = new StreamWriter("tests/SingleCampaign.csv"))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.WriteHeader<T>();
+                        csv.NextRecord();
+
+                        csv.WriteRecord(response.Result);
+                    }
+                    return response;
+                }
+                else
+                {
+                    Console.WriteLine($"Campaign with id not found.");
+                    return null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+                Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+                return null;
+            }
+        }
+
     }
 }

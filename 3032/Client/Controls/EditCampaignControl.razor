@@ -23,6 +23,7 @@
 
         <div class="mt-2 flex justify-center">
             <Button type="submit">Save</Button>
+            <Button OnClick="ExportToCsv">Export to CSV</Button>
         </div>
     </EditForm>
 }
@@ -41,12 +42,22 @@
     [Parameter]
     public EventCallback<Campaign> OnSave { get; set; }
 
+    [Parameter]
+    public EventCallback<Campaign> ExportToCsvSingle { get; set; }
 
     private async Task Submit()
     {
         if (OnSave.HasDelegate)
         {
             await OnSave.InvokeAsync();
+        }
+    }
+
+    private async Task ExportToCsv()
+    {
+        if (ExportToCsvSingle.HasDelegate)
+        {
+            await ExportToCsvSingle.InvokeAsync();
         }
     }
 

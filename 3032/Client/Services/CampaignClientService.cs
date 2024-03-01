@@ -66,4 +66,9 @@ public class CampaignClientService
         var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/ExportFiltered?code={searchFilter.Search}&filter={searchFilter.Filter}&sort={searchFilter.Sort}");
         return (result ?? Array.Empty<Campaign>()).ToList();
     }
+
+    public async Task ExportToCsvSingleAsync(string id) 
+    {
+        var result = await _httpClient.GetFromJsonAsync<Campaign>($"Campaign/ExportSingle?id={id}");
+    }
 }

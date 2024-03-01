@@ -11,4 +11,5 @@ public interface ICampaignService
     Task Update(string id,Campaign campaign);
     Task<List<Campaign>> ExportToCsv();
     Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort);
+    Task<Campaign?> ExportCsvSingle(string id);
 }

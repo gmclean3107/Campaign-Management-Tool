@@ -17,7 +17,7 @@
 </header>
 <main>
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <EditCampaignControl Model="@Model" OnSave="OnSave" FormMode="FormMode.Edit"></EditCampaignControl>
+        <EditCampaignControl Model="@Model" OnSave="OnSave" ExportToCsvSingle="ExportToCsvSingle" FormMode="FormMode.Edit"></EditCampaignControl>
     </div>
 </main>
 
@@ -57,5 +57,10 @@
         {
             NavigationManager.NavigateTo("ListCampaigns");
         }
+    }
+
+    private async Task ExportToCsvSingle()
+    {
+        await CampaignService.ExportToCsvSingleAsync(Id);
     }
 }
