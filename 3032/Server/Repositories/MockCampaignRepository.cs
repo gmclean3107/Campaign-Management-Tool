@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using CampaignManagementTool.Server.Repositories.Interfaces;
 using CampaignManagementTool.Shared;
+using CsvHelper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
@@ -139,7 +140,33 @@ public class MockCampaignRepository : ICampaignRepository
 
     public Task<List<Campaign>> ExportToCsv()
     {
-        return null;
+        var response = _campaigns;
+
+        try
+        {
+            if (response != null)
+            {
+                string exportPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CsvExports/AllCampaigns.csv");
+                using (var writer = new StreamWriter(exportPath))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(response);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Campaign with id not found.");
+                return null;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions as needed
+            Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+            return null;
+        }
+        return Task.FromResult(response);
     }
 
     public Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort)

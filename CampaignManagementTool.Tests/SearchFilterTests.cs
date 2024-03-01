@@ -101,7 +101,6 @@ namespace CampaignManagementTool.Tests
                 Assert.That(result.Count == 20);
                 Assert.That(result[0].CampaignCode == "camp020" && result[19].CampaignCode == "camp008");
             }
-
         }
     }
 }
