@@ -1,8 +1,10 @@
 ﻿using Bogus;
 using CampaignManagementTool.Server.Repositories.Interfaces;
 using CampaignManagementTool.Shared;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace CampaignManagementTool.Server.Repositories;
 
@@ -72,7 +74,65 @@ public class MockCampaignRepository : ICampaignRepository
 
     public Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort)
     {
-        return null;
+        List<Campaign> filteredCampaigns = new();
+        foreach (Campaign campaign in _campaigns) 
+        {
+            if (code != "" && (campaign.CampaignCode.Contains(code) || campaign.AffiliateCode.Contains(code) || campaign.ProducerCode.Contains(code)))
+            {
+                filteredCampaigns.Add(campaign);
+            }
+            
+            if (filter != 0) {
+                switch (filter)
+                {
+                    case 1:
+                        if (campaign.RequiresApproval == true) {
+                            filteredCampaigns.Add(campaign);
+                        }
+                        break;
+                    case 2:
+                        if (campaign.RequiresApproval == false)
+                        {
+                            filteredCampaigns.Add(campaign);
+                        }
+                        break;
+                    case 3:
+                        if (campaign.isDeleted == false)
+                        {
+                            filteredCampaigns.Add(campaign);
+                        }
+                        break;
+                    case 4:
+                        if (campaign.isDeleted == true)
+                        {
+                            filteredCampaigns.Add(campaign);
+                        }
+                        break;
+                    default: break;
+                }
+            }
+        }
+
+        if (sort != 0)
+        {
+            switch (sort)
+            {
+                case 1:
+                    filteredCampaigns = filteredCampaigns.OrderBy(campaign => campaign.CampaignCode).ToList();
+                    break;
+                case 2:
+                    filteredCampaigns = filteredCampaigns.OrderByDescending(campaign => campaign.CampaignCode).ToList();
+                    break;
+                case 3:
+                    filteredCampaigns = filteredCampaigns.OrderBy(campaign => DateTime.ParseExact(campaign.ExpiryDays, "yyyy-MM-dd", CultureInfo.InvariantCulture)).ToList();
+                    break;
+                case 4:
+                    filteredCampaigns = filteredCampaigns.OrderByDescending(campaign => DateTime.ParseExact(campaign.ExpiryDays, "yyyy-MM-dd", CultureInfo.InvariantCulture)).ToList();
+                    break;
+                default: break;
+            }
+        }
+        return Task.FromResult(filteredCampaigns);
     }
 
     public Task<List<Campaign>> ExportToCsv()

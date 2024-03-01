@@ -16,8 +16,8 @@
     "rules": "Rule 2",
     "rulesUrl": "https://example.com/rules2",
     "producerCode": "prod002",
-    "expiryDays": "2024-04-20",
-    "isDeleted": false
+    "expiryDays": "2024-02-20",
+    "isDeleted": true
   },
   {
     "campaignCode": "camp003",
@@ -66,8 +66,8 @@
     "rules": "Rule 7",
     "rulesUrl": "https://example.com/rules7",
     "producerCode": "prod007",
-    "expiryDays": "2024-09-15",
-    "isDeleted": false
+    "expiryDays": "2024-01-15",
+    "isDeleted": true
   },
   {
     "campaignCode": "camp008",
@@ -76,8 +76,8 @@
     "rules": "Rule 8",
     "rulesUrl": "https://example.com/rules8",
     "producerCode": "prod008",
-    "expiryDays": "2024-10-20",
-    "isDeleted": false
+    "expiryDays": "2023-10-20",
+    "isDeleted": true
   },
   {
     "campaignCode": "camp009",

@@ -21,6 +21,7 @@ namespace CampaignManagementTool.Tests
         [Test]
         public async Task GetAll_Returns_All_Campaigns()
         {
+            Console.WriteLine("Testing GetAll Function");
             var campaigns = await _campaignRepository.GetAll();
 
             Assert.That(campaigns != null);
@@ -38,6 +39,7 @@ namespace CampaignManagementTool.Tests
         [Test]
         public async Task Add_Adds_New_Campaign()
         {
+            Console.WriteLine("Testing Add Function");
             var newCampaign = new Campaign
             {
                 CampaignCode = "NEWCAMPAIGN",
@@ -59,6 +61,7 @@ namespace CampaignManagementTool.Tests
         [Test]
         public async Task Update_Updates_Existing_Campaign()
         {
+            Console.WriteLine("Testing Update Function");
             var existingCampaign = (await _campaignRepository.GetAll()).First();
             var updatedCampaign = new Campaign
             {
@@ -75,9 +78,55 @@ namespace CampaignManagementTool.Tests
             var retrievedCampaign = await _campaignRepository.GetById(existingCampaign.CampaignCode);
 
             Assert.That(retrievedCampaign != null);
-            Assert.That(updatedCampaign.RequiresApproval == retrievedCampaign.RequiresApproval);
+            Assert.That(updatedCampaign.RequiresApproval == retrievedCampaign.RequiresApproval && retrievedCampaign.RequiresApproval != existingCampaign.RequiresApproval);
         }
 
+        [TestCase("camp001")]
+        public async Task SearchFilter_Search_Campaigns(string code)
+        {
+            Console.WriteLine("Testing Search Function");
+            var result = await _campaignRepository.CampaignSearchFilter(code, 0, 0);
+            Assert.That(result.Count == 1);
+            Assert.That(result[0].AffiliateCode == "aff001");
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task SearchFilter_Filters_Campaigns(int filter)
+        {
+            var result = await _campaignRepository.CampaignSearchFilter("", filter, 0);
+
+            if (filter == 1)
+            {
+                Console.WriteLine("Testing Approval Required Filter");
+                Assert.That(result.Count == 10);
+                Assert.That(result[1].CampaignCode == "camp003" && result[0].AffiliateCode == "aff001");
+            }
+
+            if (filter == 2) 
+            {
+                Console.WriteLine("Testing Approval not Required Filter");
+                Assert.That(result.Count == 10);
+                Assert.That(result[1].CampaignCode == "camp004" && result[0].AffiliateCode == "aff002");
+            }
+
+            if (filter == 3) 
+            {
+                Console.WriteLine("Testing Active Filter");
+                Assert.That(result.Count == 17);
+                Assert.That(result[16].CampaignCode == "camp020" && result[0].AffiliateCode == "aff001");
+            }
+
+            if (filter == 4) 
+            {
+                Console.WriteLine("Testing Deleted Filter");
+                Assert.That(result.Count == 3);
+                Assert.That(result[1].CampaignCode == "camp007" && result[0].AffiliateCode == "aff002");
+            }
+
+        }
         // Add more test methods as needed to cover other functionalities
     }
 }
