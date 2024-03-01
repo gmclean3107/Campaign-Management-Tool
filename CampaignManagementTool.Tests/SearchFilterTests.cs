@@ -65,5 +65,43 @@ namespace CampaignManagementTool.Tests
             }
 
         }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task SearchFilter_Sort_Campaigns(int sort)
+        {
+            var result = await _campaignRepository.CampaignSearchFilter("", 0, sort);
+
+            if (sort == 1)
+            {
+                Console.WriteLine("Testing Alphabetical Order Ascending");
+                Assert.That(result.Count == 20);
+                Assert.That(result[0].CampaignCode == "camp001" && result[19].CampaignCode == "camp020");
+            }
+
+            if (sort == 2)
+            {
+                Console.WriteLine("Testing Alphabetical Order Descending");
+                Assert.That(result.Count == 20);
+                Assert.That(result[0].CampaignCode == "camp020" && result[19].CampaignCode == "camp001");
+            }
+
+            if (sort == 3)
+            {
+                Console.WriteLine("Testing Expiry Date Ascending");
+                Assert.That(result.Count == 20);
+                Assert.That(result[0].CampaignCode == "camp008" && result[19].CampaignCode == "camp020");
+            }
+
+            if (sort == 4)
+            {
+                Console.WriteLine("Testing Expiry Date Descending");
+                Assert.That(result.Count == 20);
+                Assert.That(result[0].CampaignCode == "camp020" && result[19].CampaignCode == "camp008");
+            }
+
+        }
     }
 }

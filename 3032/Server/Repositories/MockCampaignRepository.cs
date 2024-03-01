@@ -75,6 +75,8 @@ public class MockCampaignRepository : ICampaignRepository
     public Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort)
     {
         List<Campaign> filteredCampaigns = new();
+        if (filter == 0 && code == "") { filteredCampaigns = _campaigns; }
+
         foreach (Campaign campaign in _campaigns) 
         {
             if (code != "" && (campaign.CampaignCode.Contains(code) || campaign.AffiliateCode.Contains(code) || campaign.ProducerCode.Contains(code)))
