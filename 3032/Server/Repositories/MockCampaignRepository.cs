@@ -118,7 +118,7 @@ public class MockCampaignRepository : ICampaignRepository
                     filteredCampaigns.Add(campaign);
                 }
             }
-            else {
+            else if (code == ""){
                 if (filter != 0)
                 {
                     switch (filter)
