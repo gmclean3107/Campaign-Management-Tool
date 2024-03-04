@@ -25,7 +25,7 @@ public class BackgroundTaskService : BackgroundService
         {
             // Perform the task you want to schedule here
             Console.WriteLine("Expiry Date Check Done: " + DateTime.Now);
-            //await CheckCampaignExpiry(_campaignService);
+            await CheckCampaignExpiry(_campaignService);
 
             // Wait for some time before executing the task again
             await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
