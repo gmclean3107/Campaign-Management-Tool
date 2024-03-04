@@ -13,6 +13,7 @@
 <header>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">Edit Campaign</h1>
+        <Button OnClick="ViewHistory">View History</Button>
     </div>
 </header>
 <main>
@@ -62,5 +63,10 @@
     private async Task ExportToCsvSingle()
     {
         await CampaignService.ExportToCsvSingleAsync(Id);
+    }
+
+    private void ViewHistory()
+    {
+        NavigationManager.NavigateTo($"/ViewHistory/{Id}");
     }
 }

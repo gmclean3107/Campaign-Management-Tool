@@ -22,5 +22,6 @@ builder.Services.AddMsalAuthentication(options =>
 });
 
 builder.Services.AddScoped<CampaignClientService>();
+builder.Services.AddScoped<AuditLogClientService>();
 
 await builder.Build().RunAsync();

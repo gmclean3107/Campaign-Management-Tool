@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using System.Drawing.Text;
+using System.Formats.Asn1;
 using CsvHelper;
 using Azure;
 using System.Globalization;
@@ -19,7 +20,7 @@ namespace CampaignManagementTool.Server.Repositories
         public T Payload { get; set; }
     }
 
-    public class CosmosDbRepository<T> where T : class
+    public abstract class CosmosDbRepository<T> where T : class
     {
         private readonly string _databaseId;
         private readonly string _containerId;
@@ -58,44 +59,9 @@ namespace CampaignManagementTool.Server.Repositories
             }
         }
 
-        public async Task<List<T>> CampaignSearchFilter(string code, int filter, int sort)
+        protected async Task<List<T>> GetFromQueryDefinition(QueryDefinition queryDefinition)
         {
-            string filterString = "";
-            string sortString = "";
-            string queryString = "";
-            QueryDefinition query;
-
-            filterString = filter switch
-            {
-                1 => "c.payload.requiresApproval = true",
-                2 => "c.payload.requiresApproval = false",
-                3 => "c.payload.isDeleted = false",
-                4 => "c.payload.isDeleted = true",
-                _ => "1=1",
-            };
-
-            sortString = sort switch
-            {
-                1 => "ORDER BY c.id ASC",
-                2 => "ORDER BY c.id DESC",
-                3 => "ORDER BY c.payload.expiryDays ASC",
-                4 => "ORDER BY c.payload.expiryDays DESC",
-                _ => "AND 1=1",
-            };
-
-            if (code != "")
-            {
-                queryString = "SELECT * FROM c WHERE (CONTAINS(c.payload.campaignCode, @code) OR CONTAINS(c.payload.affiliateCode, @code) OR CONTAINS(c.payload.producerCode, @code)) AND " + filterString + " " + sortString;
-                query = new QueryDefinition(queryString)
-                    .WithParameter("@code", code);
-            }
-            else
-            {
-                query = new QueryDefinition("SELECT * FROM c WHERE " + filterString + " " + sortString);
-            }
-
-            var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
-
+            var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(queryDefinition);
             var results = new List<T>();
 
             while (iterator.HasMoreResults)
@@ -106,20 +72,10 @@ namespace CampaignManagementTool.Server.Repositories
 
             return results;
         }
-
         public async Task<List<T>> GetAll()
         {
             var query = new QueryDefinition($"SELECT * FROM c");
-            var iterator = _container.GetItemQueryIterator<CosmosRecord<T>>(query);
-
-            var results = new List<T>();
-            while (iterator.HasMoreResults)
-            {
-                var response = await iterator.ReadNextAsync();
-                results.AddRange(response.Resource.Select(r => r.Payload));
-            }
-
-            return results;
+            return await GetFromQueryDefinition(query);
         }
 
         public async Task Add(T item)
@@ -163,67 +119,6 @@ namespace CampaignManagementTool.Server.Repositories
                     Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
                 }
             return response;
-        }
-
-        public async Task<List<T>> ExportToCsvFiltered(string code, int filter, int sort)
-        {
-            var response = CampaignSearchFilter(code, filter, sort).Result;
-
-                try
-                {
-                    if (response != null)
-                    {
-                        using (var writer = new StreamWriter("CsvExports/FilteredCampaigns.csv"))
-                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                        {
-                            csv.WriteRecords(response);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Campaign with id not found.");
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    // Handle exceptions as needed
-                    Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
-                }
-            return response;
-        }
-
-        public Task<T?> ExportToCsvSingle(string id) 
-        {
-            var response = GetById(id);
-
-            try
-            {
-                if (response != null)
-                {
-                    using (var writer = new StreamWriter("CsvExports/SingleCampaign.csv"))
-                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                    {
-                        csv.WriteHeader<T>();
-                        csv.NextRecord();
-
-                        csv.WriteRecord(response.Result);
-                    }
-                    return response;
-                }
-                else
-                {
-                    Console.WriteLine($"Campaign with id not found.");
-                    return null;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions as needed
-                Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
-                return null;
-            }
         }
 
     }

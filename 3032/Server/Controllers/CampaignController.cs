@@ -1,4 +1,5 @@
-﻿using CampaignManagementTool.Server.Services.Interfaces;
+﻿using CampaignManagementTool.Server.Services;
+using CampaignManagementTool.Server.Services.Interfaces;
 using CampaignManagementTool.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace CampaignManagementTool.Server.Controllers;
 public class CampaignController : Controller
 {
     private readonly ICampaignService _service;
+    private readonly IAuditLogService _auditLogService;
 
-    public CampaignController(ICampaignService service)
+    public CampaignController(ICampaignService service, IAuditLogService auditLogService)
     {
         _service = service;
+        _auditLogService = auditLogService;
     }
 
     [HttpGet]
@@ -30,6 +33,12 @@ public class CampaignController : Controller
     public async Task<ActionResult> GetById([FromRoute]string id)
     {
         return Ok(await _service.GetById(id));
+    }
+    
+    [HttpGet("{id}/History")]
+    public async Task<ActionResult> GetHistory([FromRoute]string id)
+    {
+        return Ok(await _auditLogService.GetForCampaign(id));
     }
 
     [HttpGet("Search")]

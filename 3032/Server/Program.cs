@@ -21,6 +21,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<ICampaignService, CampaignService>();
 builder.Services.AddSingleton<ICampaignRepository, CosmosCampaignRepository>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddSingleton<IAuditLogRepository, CosmosAuditLogRepository>();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 builder.Services.AddHostedService<BackgroundTaskService>();
 

@@ -7,10 +7,14 @@ namespace CampaignManagementTool.Server.Services;
 public class CampaignService : ICampaignService
 {
     private readonly ICampaignRepository _repo;
+    private readonly IAuditLogRepository _auditRepo;
+    private readonly IUserContext _userContext;
 
-    public CampaignService(ICampaignRepository repo)
+    public CampaignService(ICampaignRepository repo, IAuditLogRepository auditRepo, IUserContext userContext)
     {
         _repo = repo;
+        _auditRepo = auditRepo;
+        _userContext = userContext;
     }
 
     public async Task<List<Campaign>> GetAll()
@@ -36,7 +40,32 @@ public class CampaignService : ICampaignService
 
     public async Task Update(string id, Campaign campaign)
     {
+        var currentDomain = await _repo.GetById(id);
+        var newRecord = AuditingExtensions.DeepCopyJson(campaign);
+
+        var updatedFields = AuditingExtensions.GetDifferingProperties(currentDomain, newRecord);
+        
+        //Update the record
         await _repo.Update(id,campaign);
+
+        var userId = _userContext.IdentityId;
+        var userName = _userContext.Name;
+
+        var userInfo = new UserInfo()
+        {
+            Id = userId,
+            Name = userName
+        };
+        
+        //Add the Auditing Information
+        await _auditRepo.Add(new AuditLog()
+        {
+            Id = Guid.NewGuid(),
+            CampaignCode = id,
+            Updates = updatedFields,
+            AddedDate = DateTime.UtcNow,
+            AddedBy = userInfo
+        });
     }
 
     public async Task<List<Campaign>> ExportToCsv()
