@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace CampaignManagementTool.Server.Repositories;
 
@@ -30,8 +32,14 @@ public class MockCampaignRepository : ICampaignRepository
     public async Task Add(Campaign campaign)
     {
         if (campaign == null) throw new ArgumentNullException(nameof(campaign));
-
-        _campaigns.Add(campaign);
+        if (ValidateInput(campaign))
+        {
+            _campaigns.Add(campaign);
+        }
+        else 
+        {
+            throw new InvalidOperationException("Invalid campaign.");
+        }
     }
 
     public async Task<Campaign?> GetById(string id)
@@ -45,7 +53,7 @@ public class MockCampaignRepository : ICampaignRepository
 
         var existing = await GetById(id);
 
-        if (existing != null)
+        if (existing != null && ValidateInput(campaign))
         {
             //Update existing by replacing the item in the list - not really an update but works for testing ;)
             _campaigns.Remove(existing);
@@ -54,6 +62,7 @@ public class MockCampaignRepository : ICampaignRepository
         else
         {
             //Trying to update an incorrect code?
+            throw new InvalidOperationException("Invalid campaign or ID doesn't exist.");
         }
     }
 
@@ -267,5 +276,38 @@ public class MockCampaignRepository : ICampaignRepository
             Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
             return null;
         }
+    }
+
+    private bool ValidateInput(Campaign Model)
+    {
+        bool isValid = true;
+
+        if (string.IsNullOrWhiteSpace(Model.CampaignCode))
+        {
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(Model.AffiliateCode))
+        {
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(Model.ExpiryDays))
+        {
+            isValid = false;
+        }
+        if ((!string.IsNullOrWhiteSpace(Model.Rules) && Model.Rules.Length > 1000) || (string.IsNullOrWhiteSpace(Model.Rules) && !string.IsNullOrWhiteSpace(Model.RulesUrl)))
+        {
+            isValid = false;
+        }
+        string urlPattern = @"^((https?|ftp):\/\/)?(www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}[^\s]*$";
+        if ((!string.IsNullOrWhiteSpace(Model.Rules) && string.IsNullOrWhiteSpace(Model.RulesUrl)) || ((!string.IsNullOrWhiteSpace(Model.Rules)) && !string.IsNullOrWhiteSpace(Model.RulesUrl) && !Regex.IsMatch(Model.RulesUrl, urlPattern)))
+        {
+            isValid = false;
+        }
+        if (!string.IsNullOrWhiteSpace(Model.ProducerCode) && Model.ProducerCode.Length > 1000)
+        {
+            isValid = false;
+        }
+
+        return isValid;
     }
 }
