@@ -3,6 +3,7 @@
 @using CampaignManagementTool.Shared;
 @using CampaignManagementTool.Client.Controls;
 @using CampaignManagementTool.Client.Components.Inputs
+@using System.Text.RegularExpressions;
 
 @inject NavigationManager NavigationManager;
 @inject CampaignClientService CampaignService;
@@ -17,6 +18,18 @@
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
         <EditCampaignControl Model="@Model" OnSave="OnSave"></EditCampaignControl>
     </div>
+    @if (showFields)
+    {
+        <div class="text-red-600 text-center mt-4">
+            The following is invalid:
+            @foreach (string field in invalidFields)
+            {
+                <br>
+                @field
+                ;
+            }
+        </div>
+    }
 </main>
 
 @code
@@ -25,24 +38,78 @@
 
     protected override void OnInitialized() => Model ??= new Campaign();
 
+    private List<string> invalidFields;
+    private bool showFields;
 
     private async Task OnSave()
     {
-        if (double.TryParse(Model.ExpiryDays, out double result) && !Double.IsNaN(result) && !Double.IsInfinity(result))
+        invalidFields = new List<string>();
+        showFields = false;
+        if (ValidateInput())
         {
-            DateTime expiry = DateTime.Now.AddDays(result);
-            Model.ExpiryDays = expiry.ToString("yyyy-MM-dd");
+            if (double.TryParse(Model.ExpiryDays, out double result) && !Double.IsNaN(result) && !Double.IsInfinity(result))
+            {
+                DateTime expiry = DateTime.Now.AddDays(result);
+                Model.ExpiryDays = expiry.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                Model.ExpiryDays = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+
+            var success = await CampaignService.AddAsync(Model);
+
+            if (success)
+            {
+                NavigationManager.NavigateTo("ListCampaigns");
+            }
         }
         else
         {
-            Model.ExpiryDays = DateTime.Now.ToString("yyyy-MM-dd");
-        }
-
-        var success = await CampaignService.AddAsync(Model);
-
-        if (success)
-        {
-            NavigationManager.NavigateTo("ListCampaigns");
+            showFields = true;    
         }
     }
+
+    private bool ValidateInput()
+    {
+        bool isValid = true;
+
+        if (string.IsNullOrWhiteSpace(Model.CampaignCode))
+        {
+            isValid = false;
+            invalidFields.Add("Campaign Code");
+        }
+        if (string.IsNullOrWhiteSpace(Model.AffiliateCode))
+        {
+            isValid = false;
+            invalidFields.Add("Affiliate Code");
+        }
+        if (string.IsNullOrWhiteSpace(Model.ExpiryDays))
+        {
+            isValid = false;
+            invalidFields.Add("Expiry Days");
+        }
+        if ((!string.IsNullOrWhiteSpace(Model.Rules) && Model.Rules.Length > 1000) || (string.IsNullOrWhiteSpace(Model.Rules) && !string.IsNullOrWhiteSpace(Model.RulesUrl)))
+        {
+            isValid = false;
+            invalidFields.Add("Rules");
+        }
+
+        string urlPattern = @"^((https?|ftp):\/\/)?(www\.)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}[^\s]*$";
+
+        if ((!string.IsNullOrWhiteSpace(Model.Rules) && string.IsNullOrWhiteSpace(Model.RulesUrl)) || ((!string.IsNullOrWhiteSpace(Model.Rules)) && !string.IsNullOrWhiteSpace(Model.RulesUrl) && !Regex.IsMatch(Model.RulesUrl, urlPattern)))
+        {
+            isValid = false;
+            invalidFields.Add("Rules Url");
+        }
+
+        if (!string.IsNullOrWhiteSpace(Model.ProducerCode) && Model.ProducerCode.Length > 1000)
+        {
+            isValid = false;
+            invalidFields.Add("Producer Code");
+        }
+
+        return isValid;
+    }
+
 }
