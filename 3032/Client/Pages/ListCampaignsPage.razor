@@ -123,21 +123,13 @@
                 @if (isFiltered)
                 {
                     <Button OnClick="() => ExportToCsvButton()" >
-
-
                         Export Filtered to CSV
-                        
-
                     </Button>
                 }
                 else
                 {
                     <Button OnClick="() => ExportToCsvButton()">
-
-
                         Export All to CSV
-
-
                     </Button>
                 }
             </div>
@@ -264,6 +256,7 @@
         _selectedFilter = "filter0";
         _filteredCampaigns = _campaigns;
         _sortString = "";
+        isFiltered = false;
     }
 
     private void HandleFilterChange(ChangeEventArgs e, string filterID)
