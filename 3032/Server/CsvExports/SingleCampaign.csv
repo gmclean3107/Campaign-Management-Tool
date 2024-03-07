@@ -1,2 +1,2 @@
 CampaignCode,AffiliateCode,RequiresApproval,Rules,RulesUrl,ProducerCode,ExpiryDays,isDeleted
-CAM-10,AFF-123,True,My Rules v2,www.google.com,PRO-10,2024-02-27,True
+CAM-12,AFF-12,False,My Rules,www.google.com,PRO-13,2024-02-29,True

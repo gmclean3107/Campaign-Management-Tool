@@ -45,7 +45,7 @@
     {
         invalidFields = new List<string>();
         showFields = false;
-        if (ValidateInput())
+        if (await ValidateInput())
         {
             if (double.TryParse(Model.ExpiryDays, out double result) && !Double.IsNaN(result) && !Double.IsInfinity(result))
             {
@@ -70,10 +70,17 @@
         }
     }
 
-    private bool ValidateInput()
+    private async Task<bool> ValidateInput()
     {
         bool isValid = true;
-
+        if (!string.IsNullOrWhiteSpace(Model.CampaignCode)){
+            var result = await CampaignService.GetByIdAsync(Model.CampaignCode);
+            if (result != null)
+            {
+                isValid = false;
+                invalidFields.Add("Campaign Code");
+            }
+        }
         if (string.IsNullOrWhiteSpace(Model.CampaignCode))
         {
             isValid = false;

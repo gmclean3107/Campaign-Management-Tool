@@ -32,7 +32,16 @@ public class CampaignController : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult> GetById([FromRoute]string id)
     {
-        return Ok(await _service.GetById(id));
+        var response = await _service.GetById(id);
+
+        if (response != null)
+        {
+            return Ok(await _service.GetById(id));
+        }
+        else 
+        {
+            return NotFound(null);
+        }
     }
     
     [HttpGet("{id}/History")]

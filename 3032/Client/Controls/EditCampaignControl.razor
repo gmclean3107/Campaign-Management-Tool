@@ -23,7 +23,10 @@
 
         <div class="mt-2 flex justify-center gap-2">
             <Button type="submit">Save</Button>
-            <Button OnClick="ExportToCsv">Export to CSV</Button>
+            @if (FormMode == FormMode.Edit)
+            {
+                <Button OnClick="ExportToCsv">Export to CSV</Button>
+            }
         </div>
     </EditForm>
 }

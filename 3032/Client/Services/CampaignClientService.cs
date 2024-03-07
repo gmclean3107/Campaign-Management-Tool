@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using CampaignManagementTool.Shared;
@@ -23,8 +24,21 @@ public class CampaignClientService
 
     public async Task<Campaign?> GetByIdAsync(string id)
     {
-        var campaign = await _httpClient.GetFromJsonAsync<Campaign>($"Campaign/{id}");
-        return campaign;
+        var response = await _httpClient.GetAsync($"Campaign/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var campaign = await response.Content.ReadFromJsonAsync<Campaign>();
+            return campaign;
+        }
+        else if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        else
+        {
+            throw new HttpRequestException($"Failed to get campaign. Status code: {response.StatusCode}");
+        }
     }
 
     public async Task<List<Campaign>> CampaignSearchFilterAsync(SearchFilters searchFilter)
