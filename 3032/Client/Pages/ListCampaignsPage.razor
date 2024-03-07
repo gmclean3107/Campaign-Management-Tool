@@ -90,7 +90,7 @@
                                     <TableHeader>Requires Approval</TableHeader>
                                     <TableHeader>Rules URL</TableHeader>
                                     <TableHeader>Expiry Date</TableHeader>
-                                    <TableHeader>Deleted</TableHeader>
+                                    <TableHeader>Active</TableHeader>
                                     <TableHeader>Edit</TableHeader>
                                 </TableRow>
                             </TableHead>
@@ -103,7 +103,7 @@
                                         <TableColumn>@c.RequiresApproval.ToString()</TableColumn>
                                         <TableColumn>@c.RulesUrl</TableColumn>
                                         <TableColumn>@DateTime.ParseExact(c.ExpiryDays, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None).ToString("dd/MM/yyyy")</TableColumn>
-                                        <TableColumn>@c.isDeleted</TableColumn>
+                                        <TableColumn>@(!c.isDeleted)</TableColumn>
                                         <TableColumn><Button OnClick="() => OpenCampaign(c)">Edit</Button> </TableColumn>
                                     </TableRow>
                                 }
@@ -120,11 +120,26 @@
             </div>
             <div>
                 
+                @if (isFiltered)
+                {
+                    <Button OnClick="() => ExportToCsvButton()" >
 
-                <Button OnClick="() => ExportToCsvButton()" >
-                    Export to CSV
-                </Button>
 
+                        Export Filtered to CSV
+                        
+
+                    </Button>
+                }
+                else
+                {
+                    <Button OnClick="() => ExportToCsvButton()">
+
+
+                        Export All to CSV
+
+
+                    </Button>
+                }
             </div>
         </div>
     </div>

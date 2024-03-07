@@ -8,10 +8,10 @@
     <EditForm @ref="_form" Model="@Model" OnSubmit="@Submit" FormName="Campaign">
         <div class="grid grid-cols-2 gap-2">
             <div class="col-span-full md:col-span-1">
-                <TextField Disabled="FormMode == FormMode.Edit" @bind-Value="Model.CampaignCode" Label="Campaign Code" />
-                <TextField @bind-Value="Model.AffiliateCode" Label="Affiliate Code" />
+                <TextField Disabled="FormMode == FormMode.Edit" @bind-Value="Model.CampaignCode" Label="Campaign Code *" />
+                <TextField @bind-Value="Model.AffiliateCode" Label="Affiliate Code *" />
+                <TextField @bind-Value="Model.ExpiryDays" Label="Expiry Days *" />
                 <TextField @bind-Value="Model.ProducerCode" Label="Producer Code" />
-                <TextField @bind-Value="Model.ExpiryDays" Label="Expiry Days" />
                 <CheckboxField @bind-Value="Model.RequiresApproval" Label="Requires Approval" />
                 <CheckboxField @bind-Value="Model.isDeleted" Label="Deleted" />
             </div>
