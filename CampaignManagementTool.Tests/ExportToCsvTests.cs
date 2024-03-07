@@ -26,24 +26,18 @@ namespace CampaignManagementTool.Tests
         [Test]
         public async Task Export_All_Exports_All_Campaigns()
         {
-            
+
             var result = await _campaignRepository.ExportToCsv();
-            //Assert.That(result.Count == 20);
-
-            string exportFilePath = "CsvExports/AllCampaigns.csv";
-            bool fileExists = File.Exists(exportFilePath);
-
-            Assert.That(fileExists, Is.True);
-            
 
             List<Campaign> expectedData = _campaignRepository.GetAll().Result;
-            List<Campaign> actualData = ReadExportedData(exportFilePath);
+            List<Campaign> actualData = ReadExportedData(result);
             Assert.That(actualData.Count == 20);
-            
-            for (int i = 0; i < 20; i++) 
+
+            for (int i = 0; i < 20; i++)
             {
                 string expectedString = $"{expectedData[i].CampaignCode},{expectedData[i].AffiliateCode},{expectedData[i].RequiresApproval},{expectedData[i].Rules},{expectedData[i].RulesUrl},{expectedData[i].ProducerCode},{expectedData[i].ExpiryDays},{expectedData[i].isDeleted}";
                 string actualString = $"{actualData[i].CampaignCode},{actualData[i].AffiliateCode},{actualData[i].RequiresApproval},{actualData[i].Rules},{actualData[i].RulesUrl},{actualData[i].ProducerCode},{actualData[i].ExpiryDays},{actualData[i].isDeleted}";
+                Console.WriteLine($"{expectedString}\n{actualString}");
                 Assert.That(expectedString.Equals(actualString));
             }
 
@@ -54,16 +48,10 @@ namespace CampaignManagementTool.Tests
         public async Task Export_Filtered_Exports_Filtered_Campaigns()
         {
             Console.WriteLine("Testing that exporting filtered data works correctly");
-            var result = await _campaignRepository.ExportToCsvFiltered("",1,0);
+            var result = await _campaignRepository.ExportToCsvFiltered("", 1, 0);
 
-            string exportFilePath = "CsvExports/FilteredCampaigns.csv";
-            bool fileExists = File.Exists(exportFilePath);
-
-            Assert.That(fileExists, Is.True);
-
-
-            List<Campaign> expectedData = await _campaignRepository.CampaignSearchFilter("",1,0);
-            List<Campaign> actualData = ReadExportedData(exportFilePath);
+            List<Campaign> expectedData = await _campaignRepository.CampaignSearchFilter("", 1, 0);
+            List<Campaign> actualData = ReadExportedData(result);
             Assert.That(actualData.Count == 10);
 
             for (int i = 0; i < 10; i++)
@@ -81,14 +69,8 @@ namespace CampaignManagementTool.Tests
             Console.WriteLine("Testing that exporting a single campaign works correctly");
             var result = await _campaignRepository.ExportToCsvSingle("camp004");
 
-            string exportFilePath = "CsvExports/SingleCampaign.csv";
-            bool fileExists = File.Exists(exportFilePath);
-
-            Assert.That(fileExists, Is.True);
-
-
             Campaign expectedData = await _campaignRepository.GetById("camp004");
-            List<Campaign> actualData = ReadExportedData(exportFilePath);
+            List<Campaign> actualData = ReadExportedData(result);
             Assert.That(actualData.Count == 1);
 
             string expectedString = $"{expectedData.CampaignCode},{expectedData.AffiliateCode},{expectedData.RequiresApproval},{expectedData.Rules},{expectedData.RulesUrl},{expectedData.ProducerCode},{expectedData.ExpiryDays},{expectedData.isDeleted}";
@@ -96,17 +78,67 @@ namespace CampaignManagementTool.Tests
             Assert.That(expectedString.Equals(actualString));
         }
 
-        private List<Campaign> ReadExportedData(string filePath)
+        private List<Campaign> ReadExportedData(byte[] csvBytes)
         {
-            List<Campaign> data = new List<Campaign>();
+            string csvString = Encoding.UTF8.GetString(csvBytes);
+            List<Campaign> campaigns = new List<Campaign>();
 
-            using (var reader = new StreamReader(filePath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            string[] lines = csvString.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (lines.Length < 2)
             {
-                data = csv.GetRecords<Campaign>().ToList();
+                return campaigns;
             }
 
-            return data;
+            string[] headers = lines[0].Split(',');
+
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] fields = lines[i].Split(',');
+                if (fields.Length != headers.Length)
+                {
+                    continue;
+                }
+
+                Campaign campaign = new Campaign();
+
+                for (int j = 0; j < headers.Length; j++)
+                {
+                    switch (j)
+                    {                       
+                        case 0:
+                            campaign.CampaignCode = fields[j];
+                            break;
+                        case 1:
+                            campaign.AffiliateCode = fields[j];
+                            break;
+                        case 2:
+                            campaign.RequiresApproval = bool.Parse(fields[j]);
+                            break;
+                        case 3:
+                            campaign.Rules = fields[j];
+                            break;
+                        case 4:
+                            campaign.RulesUrl = fields[j];
+                            break;
+                        case 5:
+                            campaign.ProducerCode = fields[j];
+                            break;
+                        case 6:
+                            campaign.ExpiryDays = fields[j];
+                            break;
+                        case 7:
+                            campaign.isDeleted = bool.Parse(fields[j]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                campaigns.Add(campaign);
+            }
+
+            return campaigns;
         }
     }
 }
