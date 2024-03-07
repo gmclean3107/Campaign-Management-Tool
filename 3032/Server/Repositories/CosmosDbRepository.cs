@@ -5,6 +5,7 @@ using System.Formats.Asn1;
 using CsvHelper;
 using Azure;
 using System.Globalization;
+using System.Text;
 
 namespace CampaignManagementTool.Server.Repositories
 {
@@ -90,35 +91,35 @@ namespace CampaignManagementTool.Server.Repositories
             await _container.ReplaceItemAsync(cosmosRecord, id, new PartitionKey("*"));
         }
 
-        public async Task<List<T>> ExportToCsv()
+        public async Task<byte[]> ExportToCsv()
         {
-            var response = GetAll().Result;
-                
-                try
-                {
-                    if (response != null)
-                    {
-                        using (var writer = new StreamWriter("CsvExports/AllCampaigns.csv"))
-                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                        {
-                           
+            var response = await GetAll();
 
-                            csv.WriteRecords(response);
-                            
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Campaign with id not found.");
-                    }
-                    
-                }
-                catch (Exception ex)
+            try
+            {
+                if (response != null)
                 {
-                    // Handle exceptions as needed
-                    Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+                    using (var memoryStream = new MemoryStream())
+                    using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
+                    using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    {
+                        csv.WriteRecords(response);
+                        writer.Flush();
+
+                        return memoryStream.ToArray();
+                    }
                 }
-            return response;
+                else
+                {
+                    Console.WriteLine($"Campaign with id not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
+            }
+
+            return null;
         }
 
     }

@@ -5,6 +5,7 @@ using CampaignManagementTool.Server.Repositories.Interfaces;
 using CampaignManagementTool.Shared;
 using System.Net;
 using CsvHelper;
+using System.Text;
 
 namespace CampaignManagementTool.Server.Repositories
 {
@@ -58,7 +59,7 @@ namespace CampaignManagementTool.Server.Repositories
             return await GetFromQueryDefinition(query);
         }
         
-        public async Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort)
+        public async Task<byte[]> ExportToCsvFiltered(string code, int filter, int sort)
         {
             var response = CampaignSearchFilter(code, filter, sort).Result;
 
@@ -66,57 +67,63 @@ namespace CampaignManagementTool.Server.Repositories
             {
                 if (response != null)
                 {
-                    using (var writer = new StreamWriter("CsvExports/FilteredCampaigns.csv"))
+                    using (var memoryStream = new MemoryStream())
+                    using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
                     using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                     {
                         csv.WriteRecords(response);
+                        writer.Flush();
+
+                        return memoryStream.ToArray();
                     }
                 }
                 else
                 {
                     Console.WriteLine($"Campaign with id not found.");
                 }
-
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
                 Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
             }
-            return response;
+
+            return null;
         }
         
-        public Task<Campaign?> ExportToCsvSingle(string id) 
+        public Task<byte[]> ExportToCsvSingle(string id) 
         {
-            var response = GetById(id);
-
+            var response = GetById(id).Result;
+            
             try
             {
                 if (response != null)
                 {
-                    using (var writer = new StreamWriter("CsvExports/SingleCampaign.csv"))
+                    using (var memoryStream = new MemoryStream())
+                    using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
                     using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                     {
                         csv.WriteHeader<Campaign>();
                         csv.NextRecord();
 
-                        csv.WriteRecord(response.Result);
+                        csv.WriteRecord(response);
+                        csv.NextRecord();
+
+                        writer.Flush();
+
+                        return Task.FromResult(memoryStream.ToArray());
                     }
-                    return response;
                 }
                 else
                 {
                     Console.WriteLine($"Campaign with id not found.");
-                    return null;
                 }
-
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
                 Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
-                return null;
             }
+
+            return null;
         }
 
 

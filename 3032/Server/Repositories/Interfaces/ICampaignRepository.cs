@@ -9,7 +9,7 @@ public interface ICampaignRepository
     Task<Campaign?> GetById(string id);
     Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort);
     Task Update(string id,Campaign campaign);
-    Task<List<Campaign>> ExportToCsv();
-    Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort);
-    Task<Campaign?> ExportToCsvSingle(string id);
+    Task<byte[]> ExportToCsv();
+    Task<byte[]> ExportToCsvFiltered(string code, int filter, int sort);
+    Task<byte[]> ExportToCsvSingle(string id);
 }

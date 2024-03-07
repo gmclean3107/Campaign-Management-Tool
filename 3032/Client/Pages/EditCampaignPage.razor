@@ -5,10 +5,12 @@
 @using CampaignManagementTool.Client.Components.Inputs
 @using Microsoft.AspNetCore.Authorization
 @using System.Text.RegularExpressions;
+@using Microsoft.JSInterop;
 @attribute [Authorize]
 @inject ILogger<NewCampaignPage> Logger;
 @inject CampaignClientService CampaignService;
 @inject NavigationManager NavigationManager;
+@inject IJSRuntime JSRuntime
 
 
 <header>
@@ -85,7 +87,13 @@
 
     private async Task ExportToCsvSingle()
     {
-        await CampaignService.ExportToCsvSingleAsync(Id);
+        byte[] csvData = await CampaignService.ExportToCsvSingleAsync(Id);
+        string fileName = "SingleCampaign.csv";
+
+        if (csvData != null && csvData.Length > 0)
+        {
+            await JSRuntime.InvokeVoidAsync("saveAsFile", fileName, Convert.ToBase64String(csvData));
+        }
     }
 
     private void ViewHistory()

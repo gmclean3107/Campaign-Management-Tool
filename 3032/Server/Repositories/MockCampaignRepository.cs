@@ -7,6 +7,7 @@ using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CampaignManagementTool.Server.Repositories;
@@ -184,7 +185,7 @@ public class MockCampaignRepository : ICampaignRepository
         return Task.FromResult(filteredCampaigns);
     }
 
-    public Task<List<Campaign>> ExportToCsv()
+    public Task<byte[]> ExportToCsv()
     {
         var response = _campaigns;
 
@@ -192,30 +193,30 @@ public class MockCampaignRepository : ICampaignRepository
         {
             if (response != null)
             {
-                string exportPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CsvExports/AllCampaigns.csv");
-                using (var writer = new StreamWriter(exportPath))
+                using (var memoryStream = new MemoryStream())
+                using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.WriteRecords(response);
+                    writer.Flush();
+
+                    return Task.FromResult(memoryStream.ToArray());
                 }
             }
             else
             {
                 Console.WriteLine($"Campaign with id not found.");
-                return null;
             }
-
         }
         catch (Exception ex)
         {
-            // Handle exceptions as needed
             Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
-            return null;
         }
-        return Task.FromResult(response);
+
+        return null;
     }
 
-    public Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort)
+    public Task<byte[]> ExportToCsvFiltered(string code, int filter, int sort)
     {
         var response = CampaignSearchFilter(code, filter, sort).Result;
 
@@ -223,29 +224,32 @@ public class MockCampaignRepository : ICampaignRepository
         {
             if (response != null)
             {
-                using (var writer = new StreamWriter("CsvExports/FilteredCampaigns.csv"))
+                using (var memoryStream = new MemoryStream())
+                using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.WriteRecords(response);
+                    writer.Flush();
+
+                    return Task.FromResult(memoryStream.ToArray());
                 }
             }
             else
             {
                 Console.WriteLine($"Campaign with id not found.");
             }
-
         }
         catch (Exception ex)
         {
-            // Handle exceptions as needed
             Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
         }
-        return Task.FromResult(response);
+
+        return null;
     }
 
 
 
-    public Task<Campaign?> ExportToCsvSingle(string id)
+    public Task<byte[]> ExportToCsvSingle(string id)
     {
         var response = GetById(id);
 
@@ -253,29 +257,30 @@ public class MockCampaignRepository : ICampaignRepository
         {
             if (response != null)
             {
-                using (var writer = new StreamWriter("CsvExports/SingleCampaign.csv"))
+                using (var memoryStream = new MemoryStream())
+                using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.WriteHeader<Campaign>();
                     csv.NextRecord();
 
-                    csv.WriteRecord(response.Result);
+                    csv.WriteRecord(response);
+                    writer.Flush();
+
+                    return Task.FromResult(memoryStream.ToArray());
                 }
-                return response;
             }
             else
             {
                 Console.WriteLine($"Campaign with id not found.");
-                return null;
             }
-
         }
         catch (Exception ex)
         {
-            // Handle exceptions as needed
             Console.WriteLine($"An error occurred while exporting campaign to CSV: {ex.Message}");
-            return null;
         }
+
+        return null;
     }
 
     private bool ValidateInput(Campaign Model)

@@ -67,22 +67,59 @@ public class CampaignClientService
     }
 
 
-    public async Task<List<Campaign>> ExportToCsvAsync()
+    public async Task<byte[]> ExportToCsvAsync()
     {
         
-        var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/Export");
+        var response = await _httpClient.GetAsync($"Campaign/Export");
 
-        return (result ?? Array.Empty<Campaign>()).ToList();
+        if (response.IsSuccessStatusCode)
+        {
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+        else
+        {
+            throw new Exception($"Failed to export CSV: {response.StatusCode}");
+        }
     }
 
-    public async Task<List<Campaign>> ExportToCsvFilteredAsync(SearchFilters searchFilter) 
+    public async Task<byte[]> ExportToCsvFilteredAsync(SearchFilters searchFilter) 
     {
-        var result = await _httpClient.GetFromJsonAsync<Campaign[]>($"Campaign/ExportFiltered?code={searchFilter.Search}&filter={searchFilter.Filter}&sort={searchFilter.Sort}");
-        return (result ?? Array.Empty<Campaign>()).ToList();
+        var response = await _httpClient.GetAsync($"Campaign/ExportFiltered?code={searchFilter.Search}&filter={searchFilter.Filter}&sort={searchFilter.Sort}");
+        if (response.IsSuccessStatusCode)
+        {
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+        else
+        {
+            throw new Exception($"Failed to export CSV: {response.StatusCode}");
+        }
     }
 
-    public async Task ExportToCsvSingleAsync(string id) 
+    public async Task<byte[]> ExportToCsvSingleAsync(string id) 
     {
-        var result = await _httpClient.GetFromJsonAsync<Campaign>($"Campaign/ExportSingle?id={id}");
+        var response = await _httpClient.GetAsync($"Campaign/ExportSingle?id={id}");
+        if (response.IsSuccessStatusCode)
+        {
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+        else
+        {
+            throw new Exception($"Failed to export CSV: {response.StatusCode}");
+        }
     }
 }

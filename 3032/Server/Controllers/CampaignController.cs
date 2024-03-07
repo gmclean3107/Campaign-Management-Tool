@@ -75,20 +75,64 @@ public class CampaignController : Controller
     [HttpGet("Export")]
     public async Task<ActionResult> ExportToCsv()
     {
-        return Ok(await _service.ExportToCsv());
+        var csvData = await _service.ExportToCsv();
+        if (csvData == null)
+        {
+            return NotFound("Data not found or error occurred during export.");
+        }
+
+        var result = new FileContentResult(csvData, "text/csv")
+        {
+            FileDownloadName = "AllCampaigns.csv"
+        };
+
+        Response.Headers.Add("Content-Disposition", "attachment; filename=AllCampaigns.csv; filename*=UTF-8''AllCampaigns.csv");
+        Response.Headers.Add("Content-Length", csvData.Length.ToString());
+        Response.Headers.Add("Content-Type", "text/csv");
+
+        return result;
     }
 
     [HttpGet("ExportFiltered")]
     public async Task<ActionResult> ExportToCsvFiltered([FromQuery] int sort, [FromQuery] int filter, [FromQuery] string code = "")
     {
-        return Ok(await _service.ExportToCsvFiltered(code, filter, sort));
+        var csvData = await _service.ExportToCsvFiltered(code, filter, sort);
+        if (csvData == null)
+        {
+            return NotFound("Data not found or error occurred during export.");
+        }
+
+        var result = new FileContentResult(csvData, "text/csv")
+        {
+            FileDownloadName = "AllCampaigns.csv"
+        };
+
+        Response.Headers.Add("Content-Disposition", "attachment; filename=AllCampaigns.csv; filename*=UTF-8''AllCampaigns.csv");
+        Response.Headers.Add("Content-Length", csvData.Length.ToString());
+        Response.Headers.Add("Content-Type", "text/csv");
+
+        return result;
     }
 
     [HttpGet("ExportSingle")]
     public async Task<ActionResult> ExportToCsvSingle([FromQuery] string id) 
     {
-        var result = await _service.ExportCsvSingle(id);
-        return Ok(result);
+        var csvData = await _service.ExportCsvSingle(id);
+        if (csvData == null)
+        {
+            return NotFound("Data not found or error occurred during export.");
+        }
+
+        var result = new FileContentResult(csvData, "text/csv")
+        {
+            FileDownloadName = "AllCampaigns.csv"
+        };
+
+        Response.Headers.Add("Content-Disposition", "attachment; filename=AllCampaigns.csv; filename*=UTF-8''AllCampaigns.csv");
+        Response.Headers.Add("Content-Length", csvData.Length.ToString());
+        Response.Headers.Add("Content-Type", "text/csv");
+
+        return result;
     }
 
 }

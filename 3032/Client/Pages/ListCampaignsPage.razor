@@ -6,10 +6,11 @@
 @using CampaignManagementTool.Shared;
 @using CampaignManagementTool.Client.Components.Inputs
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.JSInterop;
 @attribute [Authorize]
 @inject NavigationManager NavigationManager;
 @inject CampaignClientService CampaignService;
-
+@inject IJSRuntime JSRuntime
 <header>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">List Campaigns</h1>
@@ -160,17 +161,28 @@
         NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
     }
 
-    private async void ExportToCsvButton()
+    private async Task ExportToCsvButton()
     {
+        byte[] csvData;
+        string fileName = ""; // Specify the filename here
+
         if (!isFiltered)
         {
-            var response = await CampaignService.ExportToCsvAsync();
+            csvData = await CampaignService.ExportToCsvAsync();
+            fileName = "AllCampaigns.csv";
         }
         else
         {
-            var response = await CampaignService.ExportToCsvFilteredAsync(_searchFilter);    
+            csvData = await CampaignService.ExportToCsvFilteredAsync(_searchFilter);
+            fileName = "FilteredCampaigns.csv";
+        }
+
+        if (csvData != null && csvData.Length > 0)
+        {
+            await JSRuntime.InvokeVoidAsync("saveAsFile", fileName, Convert.ToBase64String(csvData));
         }
     }
+
 
     private async Task FilterSearch()
     {

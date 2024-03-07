@@ -68,20 +68,20 @@ public class CampaignService : ICampaignService
         });
     }
 
-    public async Task<List<Campaign>> ExportToCsv()
+    public async Task<byte[]> ExportToCsv()
     {
         var result = await _repo.ExportToCsv();
 
         return result;
     }
 
-    public async Task<List<Campaign>> ExportToCsvFiltered(string code, int filter, int sort) 
+    public async Task<byte[]> ExportToCsvFiltered(string code, int filter, int sort) 
     {
         var results = await _repo.ExportToCsvFiltered(code, filter, sort);
         return results;
     }
 
-    public async Task<Campaign?> ExportCsvSingle(string id)
+    public async Task<byte[]> ExportCsvSingle(string id)
     {
         var result = await _repo.ExportToCsvSingle(id);
         return result;
