@@ -2,6 +2,7 @@
 using CampaignManagementTool.Server;
 using CampaignManagementTool.Server.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 internal sealed class CustomClaimsTransformation : IClaimsTransformation
@@ -27,8 +28,8 @@ internal sealed class CustomClaimsTransformation : IClaimsTransformation
         var authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
 
         var identityId = principal.GetIdentityId();
-
-        var userRoles = await authorizationService.GetRolesForUserAsync(identityId);
+        var name = principal.GetDisplayName();
+        var userRoles = await authorizationService.GetRolesForUserAsync(identityId,name);
 
         var claimsIdentity = new ClaimsIdentity();
 
