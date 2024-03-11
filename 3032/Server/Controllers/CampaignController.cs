@@ -66,6 +66,7 @@ public class CampaignController : Controller
     }
 
     [HttpPut]
+    [Authorize(Roles = Roles.Editor)]
     public async Task<ActionResult> Update([FromBody] Campaign campaign)
     {
         await _service.Update(campaign.CampaignCode ,campaign);
