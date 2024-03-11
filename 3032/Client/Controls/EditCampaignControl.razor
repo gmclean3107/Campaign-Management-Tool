@@ -8,21 +8,24 @@
     <EditForm @ref="_form" Model="@Model" OnSubmit="@Submit" FormName="Campaign">
         <div class="grid grid-cols-2 gap-2">
             <div class="col-span-full md:col-span-1">
-                <TextField Disabled="FormMode == FormMode.Edit" @bind-Value="Model.CampaignCode" Label="Campaign Code *" />
-                <TextField @bind-Value="Model.AffiliateCode" Label="Affiliate Code *" />
-                <TextField @bind-Value="Model.ExpiryDays" Label="Expiry Days *" />
-                <TextField @bind-Value="Model.ProducerCode" Label="Producer Code" />
-                <CheckboxField @bind-Value="Model.RequiresApproval" Label="Requires Approval" />
-                <CheckboxField @bind-Value="Model.isDeleted" Label="Deleted" />
+                <TextField Disabled="FormMode is FormMode.Edit or FormMode.View" @bind-Value="Model.CampaignCode" Label="Campaign Code *" />
+                <TextField Disabled="FormMode is FormMode.View" @bind-Value="Model.AffiliateCode" Label="Affiliate Code *" />
+                <TextField Disabled="FormMode is FormMode.View" @bind-Value="Model.ExpiryDays" Label="Expiry Days *" />
+                <TextField Disabled="FormMode is FormMode.View" @bind-Value="Model.ProducerCode" Label="Producer Code" />
+                <CheckboxField Disabled="FormMode is FormMode.View" @bind-Value="Model.RequiresApproval" Label="Requires Approval" />
+                <CheckboxField Disabled="FormMode is FormMode.View" @bind-Value="Model.isDeleted" Label="Deleted" />
             </div>
             <div class="col-span-full md:col-span-1">
-                <TextArea @bind-Value="Model.Rules" Label="Rules" />
-                <TextField @bind-Value="Model.RulesUrl" Label="Rules URL" />
+                <TextAreaField Disabled="FormMode is FormMode.View" @bind-Value="Model.Rules" Label="Rules" />
+                <TextField Disabled="FormMode is FormMode.View" @bind-Value="Model.RulesUrl" Label="Rules URL" />
             </div>
         </div>
 
         <div class="mt-2 flex justify-center gap-2">
-            <Button type="submit">Save</Button>
+            @if (FormMode != FormMode.View)
+            {
+                <Button type="submit">Save</Button>
+            }
             @if (FormMode == FormMode.Edit)
             {
                 <Button OnClick="ExportToCsv">Export to CSV</Button>

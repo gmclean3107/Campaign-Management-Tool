@@ -1,4 +1,4 @@
-﻿@page "/ViewHistory/{id}"
+﻿@page "/ViewHistory/{id}/{mode}"
 @using CampaignManagementTool.Shared
 @using CampaignManagementTool.Client.Services
 @inject AuditLogClientService AuditService;
@@ -68,6 +68,7 @@
     private List<AuditLog>? _logs;
 
     [Parameter] public string Id { get; set; }
+    [Parameter] public string Mode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,7 +79,17 @@
 
     private void BackToRecord()
     {
-        NavigationManager.NavigateTo($"EditCampaign/{Id}");
+        if (Mode == "Edit")
+        {
+            NavigationManager.NavigateTo($"EditCampaign/{Id}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"ViewCampaign/{Id}");
+        }
+        
+
+        
     }
 
 }

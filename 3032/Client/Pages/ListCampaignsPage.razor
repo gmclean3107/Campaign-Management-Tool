@@ -11,131 +11,156 @@
 @inject NavigationManager NavigationManager;
 @inject CampaignClientService CampaignService;
 @inject IJSRuntime JSRuntime
-<header>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">List Campaigns</h1>
-    </div>
-</header>
-<main>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="mt-8 flow-root">
-            <div class="mb-4">
-                <InputText @bind-Value="_searchQuery" Placeholder="Search Campaigns..." />
-                <Button OnClick="() => FilterSearch()" class="ml-2">Search</Button>
-                <Button OnClick="() => ResetSearch()" class="ml-2">Reset</Button>
-                <div class="flex justify-end">
-                    <div class="absolute ml-4">
-                        <div>
-                            <Button OnClick="() => ToggleDropdown()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Sort By
-                            </Button>
-                        </div>
-                        @if (isDropdownOpen)
-                        {
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                                <div class="py-2 flex flex-col space-y-2 items-center">
-                                    <Button OnClick='() => SortCampaigns("sort1")'>Alphabetical Asc.</Button>
-                                    <Button OnClick='() => SortCampaigns("sort2")'>Alphabetical Desc.</Button>
-                                    <Button OnClick='() => SortCampaigns("sort3")'>Expiry Date Asc.</Button>
-                                    <Button OnClick='() => SortCampaigns("sort4")'>Expiry Date Desc.</Button>
-                                    <!-- Add more sorting options as needed -->
+@inject RolesClientService RolesService;
+
+
+@if (_canAccess)
+{
+
+    <header>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">List Campaigns</h1>
+        </div>
+    </header>
+    <main>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mt-8 flow-root">
+                <div class="mb-4">
+                    <InputText @bind-Value="_searchQuery" Placeholder="Search Campaigns..."/>
+                    <Button OnClick="() => FilterSearch()" class="ml-2">Search</Button>
+                    <Button OnClick="() => ResetSearch()" class="ml-2">Reset</Button>
+                    <div class="flex justify-end">
+                        <div class="absolute ml-4">
+                            <div>
+                                <Button OnClick="() => ToggleDropdown()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Sort By
+                                </Button>
+                            </div>
+                            @if (isDropdownOpen)
+                            {
+                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                                    <div class="py-2 flex flex-col space-y-2 items-center">
+                                        <Button OnClick='() => SortCampaigns("sort1")'>Alphabetical Asc.</Button>
+                                        <Button OnClick='() => SortCampaigns("sort2")'>Alphabetical Desc.</Button>
+                                        <Button OnClick='() => SortCampaigns("sort3")'>Expiry Date Asc.</Button>
+                                        <Button OnClick='() => SortCampaigns("sort4")'>Expiry Date Desc.</Button>
+                                        <!-- Add more sorting options as needed -->
+                                    </div>
                                 </div>
+                            }
+                        </div>
+                    </div>
+
+
+                    <div class="dropdown ml-auto">
+                        <label for="filterTitle"><strong>Filters</strong></label>
+                        <div class="dropdown-menu" aria-labelledby="filterDropdown">
+                            <form>
+                                <div class="form-check">
+                                    <input type="radio" id="filter0" name="filter" checked="@(_selectedFilter == "filter0")" @onchange='(e) => HandleFilterChange(e, "filter0")'/>
+                                    <label for="filter0">All Campaigns</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="filter1" name="filter" @onchange='(e) => HandleFilterChange(e, "filter1")'/>
+                                    <label for="filter1">Approval Required</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="filter2" name="filter" @onchange='(e) => HandleFilterChange(e, "filter2")'/>
+                                    <label for="filter2">No Approval Required</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="filter3" name="filter" @onchange='(e) => HandleFilterChange(e, "filter3")'/>
+                                    <label for="filter3">Active</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" id="filter4" name="filter" @onchange='(e) => HandleFilterChange(e, "filter4")'/>
+                                    <label for="filter4">Deleted</label>
+                                </div>
+                                <!-- More filters can be added here -->
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+                    <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                        @if (_campaigns != null)
+                        {
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableHeader>Code</TableHeader>
+                                        <TableHeader>Affiliate</TableHeader>
+                                        <TableHeader>Requires Approval</TableHeader>
+                                        <TableHeader>Rules URL</TableHeader>
+                                        <TableHeader>Expiry Date</TableHeader>
+                                        <TableHeader>Active</TableHeader>
+                                        <TableHeader>Edit</TableHeader>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    @foreach (var c in _filteredCampaigns)
+                                    {
+                                        <TableRow>
+                                            <TableColumn>@c.CampaignCode</TableColumn>
+                                            <TableColumn>@c.AffiliateCode</TableColumn>
+                                            <TableColumn>@c.RequiresApproval.ToString()</TableColumn>
+                                            <TableColumn>@c.RulesUrl</TableColumn>
+                                            <TableColumn>@DateTime.ParseExact(c.ExpiryDays, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None).ToString("dd/MM/yyyy")</TableColumn>
+                                            <TableColumn>@(!c.isDeleted)</TableColumn>
+                                            <TableColumn>
+                                                <Button OnClick="() => OpenCampaign(c)">Edit</Button>
+                                                <Button OnClick="() => OpenCampaignView(c)">View</Button>
+                                            </TableColumn>
+                                        </TableRow>
+                                    }
+                                </TableBody>
+                            </Table>
+                        }
+                        else
+                        {
+                            <div class="flex justify-center">
+                                <LoadingSpinner></LoadingSpinner>
                             </div>
                         }
                     </div>
                 </div>
+                <div>
 
-
-                <div class="dropdown ml-auto">
-                    <label for="filterTitle"><strong>Filters</strong></label>
-                    <div class="dropdown-menu" aria-labelledby="filterDropdown">
-                        <form>
-                            <div class="form-check">
-                                <input type="radio" id="filter0" name="filter" checked="@(_selectedFilter == "filter0")" @onchange='(e) => HandleFilterChange(e, "filter0")' />
-                                <label for="filter0">All Campaigns</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" id="filter1" name="filter" @onchange='(e) => HandleFilterChange(e, "filter1")' />
-                                <label for="filter1">Approval Required</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" id="filter2" name="filter" @onchange='(e) => HandleFilterChange(e, "filter2")' />
-                                <label for="filter2">No Approval Required</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" id="filter3" name="filter" @onchange='(e) => HandleFilterChange(e, "filter3")' />
-                                <label for="filter3">Active</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" id="filter4" name="filter" @onchange='(e) => HandleFilterChange(e, "filter4")' />
-                                <label for="filter4">Deleted</label>
-                            </div>
-                            <!-- More filters can be added here -->
-                        </form>
-                    </div>
-                </div>
-
-            </div>
-            
-
-            <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    @if (_campaigns != null)
+                    @if (isFiltered)
                     {
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableHeader>Code</TableHeader>
-                                    <TableHeader>Affiliate</TableHeader>
-                                    <TableHeader>Requires Approval</TableHeader>
-                                    <TableHeader>Rules URL</TableHeader>
-                                    <TableHeader>Expiry Date</TableHeader>
-                                    <TableHeader>Active</TableHeader>
-                                    <TableHeader>Edit</TableHeader>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                @foreach (var c in _filteredCampaigns)
-                                {
-                                    <TableRow>
-                                        <TableColumn>@c.CampaignCode</TableColumn>
-                                        <TableColumn>@c.AffiliateCode</TableColumn>
-                                        <TableColumn>@c.RequiresApproval.ToString()</TableColumn>
-                                        <TableColumn>@c.RulesUrl</TableColumn>
-                                        <TableColumn>@DateTime.ParseExact(c.ExpiryDays, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None).ToString("dd/MM/yyyy")</TableColumn>
-                                        <TableColumn>@(!c.isDeleted)</TableColumn>
-                                        <TableColumn><Button OnClick="() => OpenCampaign(c)">Edit</Button> </TableColumn>
-                                    </TableRow>
-                                }
-                            </TableBody>
-                        </Table>
+                        <Button OnClick="() => ExportToCsvButton()">
+                            Export Filtered to CSV
+                        </Button>
                     }
                     else
                     {
-                        <div class="flex justify-center">
-                            <LoadingSpinner></LoadingSpinner>
-                        </div>
+                        <Button OnClick="() => ExportToCsvButton()">
+                            Export All to CSV
+                        </Button>
                     }
                 </div>
             </div>
-            <div>
-                
-                @if (isFiltered)
-                {
-                    <Button OnClick="() => ExportToCsvButton()" >
-                        Export Filtered to CSV
-                    </Button>
-                }
-                else
-                {
-                    <Button OnClick="() => ExportToCsvButton()">
-                        Export All to CSV
-                    </Button>
-                }
+        </div>
+    </main>
+}
+else
+{
+    <div class="rounded-md bg-red-50 p-4 max-w-7xl mx-auto">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">You are not authorized to List Campaigns.</h3>
             </div>
         </div>
     </div>
-</main>
+}
 
 @code {
     private List<Campaign>? _campaigns;
@@ -148,8 +173,12 @@
     private bool isFiltered = false;
     private bool isDropdownOpen = false;
 
+    private bool _canAccess;
+    
     protected override async Task OnInitializedAsync()
     {
+        _canAccess = await RolesService.HasRole(Roles.Viewer);
+        
         _campaigns = await CampaignService.GetAllAsync();
         _searchFilter = new SearchFilters();
         _filteredCampaigns = _campaigns;
@@ -166,6 +195,11 @@
     private void OpenCampaign(Campaign c)
     {
         NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
+    }
+    
+    private void OpenCampaignView(Campaign c)
+    {
+        NavigationManager.NavigateTo($"ViewCampaign/{c.CampaignCode}");
     }
 
     private async Task ExportToCsvButton()

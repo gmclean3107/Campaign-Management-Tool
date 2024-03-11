@@ -1,0 +1,95 @@
+﻿@page "/ViewCampaign/{id}"
+@using CampaignManagementTool.Client.Services;
+@using CampaignManagementTool.Shared;
+@using CampaignManagementTool.Client.Controls;
+@using CampaignManagementTool.Client.Components.Inputs
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject ILogger<ViewCampaignPage> Logger;
+@inject CampaignClientService CampaignService;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JSRuntime
+@inject RolesClientService RolesService;
+
+@if(_canAccess){
+<header>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">View Campaign</h1>
+        <Button OnClick="ViewHistory">View History</Button>
+    </div>
+</header>
+<main>
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <EditCampaignControl Model="@Model" ExportToCsvSingle="ExportToCsvSingle" FormMode="FormMode.View"></EditCampaignControl>
+    </div>
+    @if (showFields)
+    {
+        <div class="text-red-600 text-center mt-4">
+            The following is invalid:
+            @foreach (string field in invalidFields)
+            {
+                <br>
+                @field;    
+            }
+        </div>
+    }
+</main>
+}else
+{
+    <div class="rounded-md bg-red-50 p-4 max-w-7xl mx-auto">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">You are not authorized to View Campaigns.</h3>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@code
+{
+
+    [Parameter]
+    public string Id { get; set; }
+
+    public Campaign? Model { get; set; }
+
+    private List<string> invalidFields;
+    private bool showFields;
+    private bool _canAccess;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _canAccess = await RolesService.HasRole(Roles.Viewer);
+
+        
+        Model = await CampaignService.GetByIdAsync(Id);
+
+        Model.ExpiryDays = DateTime.Parse(Model.ExpiryDays).Subtract(DateTime.Now.Date).TotalDays.ToString();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task ExportToCsvSingle()
+    {
+        byte[] csvData = await CampaignService.ExportToCsvSingleAsync(Id);
+        string fileName = "SingleCampaign.csv";
+
+        if (csvData != null && csvData.Length > 0)
+        {
+            await JSRuntime.InvokeVoidAsync("saveAsFile", fileName, Convert.ToBase64String(csvData));
+        }
+    }
+
+    private void ViewHistory()
+    {
+        NavigationManager.NavigateTo($"/ViewHistory/{Id}/View");
+    }
+    
+}

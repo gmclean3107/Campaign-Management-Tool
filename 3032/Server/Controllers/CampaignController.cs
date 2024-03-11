@@ -57,6 +57,7 @@ public class CampaignController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = Roles.Editor)]
     public async Task<ActionResult> Add([FromBody]Campaign campaign)
     {
         await _service.Add(campaign);

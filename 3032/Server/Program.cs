@@ -2,6 +2,7 @@ using CampaignManagementTool.Server.Repositories;
 using CampaignManagementTool.Server.Repositories.Interfaces;
 using CampaignManagementTool.Server.Services;
 using CampaignManagementTool.Server.Services.Interfaces;
+using CampaignManagementTool.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -16,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
 
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -24,8 +26,11 @@ builder.Services.AddSingleton<ICampaignRepository, CosmosCampaignRepository>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddSingleton<IAuditLogRepository, CosmosAuditLogRepository>();
 builder.Services.AddScoped<IUserContext, UserContext>();
-
-builder.Services.AddHostedService<BackgroundTaskService>();
+builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
+builder.Services.AddScoped<AuthorizationService>();
+builder.Services.AddSingleton<IUserRepository, CosmosUserRepository>();
+//builder.Services.AddHostedService<BackgroundTaskService>();
 
 var app = builder.Build();
 

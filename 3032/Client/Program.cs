@@ -1,5 +1,6 @@
 using CampaignManagementTool.Client;
 using CampaignManagementTool.Client.Services;
+using CampaignManagementTool.Shared;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+
 
 
 builder.Services.AddHttpClient("CampaignManagementTool.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
@@ -18,10 +20,14 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAdB2C", options.ProviderOptions.Authentication);
-    options.ProviderOptions.DefaultAccessTokenScopes.Add("https://QUBGroup21.onmicrosoft.com/30040725-21e1-4c5a-ad40-e3b7c4b80914/API.Access");
+    options.ProviderOptions.DefaultAccessTokenScopes.Add(
+        "https://QUBGroup21.onmicrosoft.com/30040725-21e1-4c5a-ad40-e3b7c4b80914/API.Access");
 });
+
+
 
 builder.Services.AddScoped<CampaignClientService>();
 builder.Services.AddScoped<AuditLogClientService>();
+builder.Services.AddScoped<RolesClientService>();
 
 await builder.Build().RunAsync();

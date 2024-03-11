@@ -1,2 +1,0 @@
-/* Shared classes can be referenced by both the Client and Server */
-
