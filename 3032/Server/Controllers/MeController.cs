@@ -14,12 +14,21 @@ public class MeController : Controller
     private readonly AuthorizationService _authorizationService;
     private readonly IUserContext _userContext;
 
+    /// <summary>
+    /// Constructor for MeController
+    /// </summary>
+    /// <param name="authorizationService"></param>
+    /// <param name="userContext"></param>
     public MeController(AuthorizationService authorizationService, IUserContext userContext)
     {
         _authorizationService = authorizationService;
         _userContext = userContext;
     }
 
+    /// <summary>
+    /// Gets user ID, name and roles.
+    /// </summary>
+    /// <returns>Code 200 and user's roles.</returns>
     [HttpGet("roles")]
     public async Task<ActionResult> GetRoles()
     {

@@ -174,11 +174,11 @@ else
     private bool isDropdownOpen = false;
 
     private bool _canAccess;
-    
+
     protected override async Task OnInitializedAsync()
     {
         _canAccess = await RolesService.HasRole(Roles.Viewer);
-        
+
         _campaigns = await CampaignService.GetAllAsync();
         _searchFilter = new SearchFilters();
         _filteredCampaigns = _campaigns;
@@ -192,16 +192,27 @@ else
         await base.OnInitializedAsync();
     }
 
+    /// <summary>
+    /// Opens the campaign for editing.
+    /// </summary>
+    /// <param name="c">The campaign to edit.</param>
     private void OpenCampaign(Campaign c)
     {
         NavigationManager.NavigateTo($"EditCampaign/{c.CampaignCode}");
     }
-    
+
+    /// <summary>
+    /// Opens the campaign for viewing.
+    /// </summary>
+    /// <param name="c">The campaign to view.</param>
     private void OpenCampaignView(Campaign c)
     {
         NavigationManager.NavigateTo($"ViewCampaign/{c.CampaignCode}");
     }
 
+    /// <summary>
+    /// Exports filtered or all campaigns to CSV.
+    /// </summary>
     private async Task ExportToCsvButton()
     {
         byte[] csvData;
@@ -224,7 +235,9 @@ else
         }
     }
 
-
+    /// <summary>
+    /// Filters the campaigns based on search, sort and filter.
+    /// </summary>
     private async Task FilterSearch()
     {
         //Set filter
@@ -284,6 +297,9 @@ else
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Resets the search, sort and filter.
+    /// </summary>
     private void ResetSearch()
     {
         _searchQuery = "";
@@ -293,11 +309,19 @@ else
         isFiltered = false;
     }
 
+    /// <summary>
+    /// Sets the value of the variable that stores what filter to use.
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="filterID">ID of selected filter</param>
     private void HandleFilterChange(ChangeEventArgs e, string filterID)
     {
         _selectedFilter = filterID;
     }
 
+    /// <summary>
+    /// Reloads the page.
+    /// </summary>
     private async Task ReloadPage()
     {
         if (!isFiltered)
@@ -312,6 +336,9 @@ else
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Toggles the dropdown menu for sorting.
+    /// </summary>
     private void ToggleDropdown()
     {
         if (isDropdownOpen)
@@ -325,6 +352,10 @@ else
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Sets value of variable that stores what sort option to use.
+    /// </summary>
+    /// <param name="sortInput">Selected sort option</param>
     private void SortCampaigns(string sortInput)
     {
         _sortString = sortInput;

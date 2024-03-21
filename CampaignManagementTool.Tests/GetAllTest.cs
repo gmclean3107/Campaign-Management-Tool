@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CampaignManagementTool.Server.Repositories;
-using CampaignManagementTool.Shared;
 
 namespace CampaignManagementTool.Tests
 {
+    /// <summary>
+    /// Test class for validating the GetAll method of the MockCampaignRepository.
+    /// </summary>
     [TestFixture]
     public class GetAllTest
     { 
@@ -18,7 +16,9 @@ namespace CampaignManagementTool.Tests
             _campaignRepository = new MockCampaignRepository();
         }
 
-
+        /// <summary>
+        /// Verifies that the GetAll method returns all campaigns.
+        /// </summary>
         [Test]
         public async Task GetAll_Returns_All_Campaigns()
         {

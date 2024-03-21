@@ -1,12 +1,10 @@
 ﻿using CampaignManagementTool.Server.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CampaignManagementTool.Tests
 {
+    /// <summary>
+    /// Test class for validating the search, filtering, and sorting functionality of the MockCampaignRepository.
+    /// </summary>
     [TestFixture]
     public class SearchFilterTests
     {
@@ -18,7 +16,10 @@ namespace CampaignManagementTool.Tests
             _campaignRepository = new MockCampaignRepository();
         }
 
-
+        /// <summary>
+        /// Verifies that searching for campaigns by campaign code returns the expected campaign.
+        /// </summary>
+        /// <param name="code">The campaign code to search for.</param>
         [TestCase("camp001")]
         public async Task SearchFilter_Search_Campaigns(string code)
         {
@@ -28,6 +29,10 @@ namespace CampaignManagementTool.Tests
             Assert.That(result[0].AffiliateCode == "aff001");
         }
 
+        /// <summary>
+        /// Verifies that filtering campaigns by different criteria returns the expected results.
+        /// </summary>
+        /// <param name="filter">The filter criteria to apply.</param>
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
@@ -66,6 +71,10 @@ namespace CampaignManagementTool.Tests
 
         }
 
+        /// <summary>
+        /// Verifies that sorting campaigns by different criteria returns the expected results.
+        /// </summary>
+        /// <param name="sort">The sort criteria to apply.</param>
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
@@ -103,6 +112,11 @@ namespace CampaignManagementTool.Tests
             }
         }
 
+        /// <summary>
+        /// Verifies that filtering and sorting campaigns together returns the expected results.
+        /// </summary>
+        /// <param name="filter">The filter criteria to apply.</param>
+        /// <param name="sort">The sort criteria to apply.</param>
         [TestCase(1, 1)]
         [TestCase(1, 2)]
         [TestCase(1, 3)]
@@ -229,6 +243,11 @@ namespace CampaignManagementTool.Tests
                 }
             }
         }
+
+        /// <summary>
+        /// Verifies that searching and filtering campaigns together returns the expected results.
+        /// </summary>
+        /// <param name="filter">The filter criteria to apply.</param>
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
@@ -260,6 +279,11 @@ namespace CampaignManagementTool.Tests
             }
         }
 
+        /// <summary>
+        /// Verifies that searching, filtering, and sorting campaigns together returns the expected results.
+        /// </summary>
+        /// <param name="filter">The filter criteria to apply.</param>
+        /// <param name="sort">The sort criteria to apply.</param>
         [TestCase(1, 1)]
         [TestCase(1, 2)]
         [TestCase(1, 3)]
@@ -375,6 +399,12 @@ namespace CampaignManagementTool.Tests
                 }
             }
         }
+
+        /// <summary>
+        /// Verifies that searching for campaigns with an invalid search string returns no results.
+        /// </summary>
+        /// <param name="filter">The filter criteria to apply.</param>
+        /// <param name="sort">The sort criteria to apply.</param>
         [TestCase(0, 0)]
         [TestCase(1, 1)]
         [TestCase(1, 2)]

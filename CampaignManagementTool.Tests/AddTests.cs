@@ -1,13 +1,13 @@
 ﻿using CampaignManagementTool.Server.Repositories;
 using CampaignManagementTool.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CampaignManagementTool.Tests
 {
+
+    /// <summary>
+    /// Test class for validating the Add method of MockCampaignRepository.
+    /// </summary>
     [TestFixture]
     public class AddTests
     {
@@ -19,7 +19,9 @@ namespace CampaignManagementTool.Tests
             _campaignRepository = new MockCampaignRepository();
         }
 
-
+        /// <summary>
+        /// Verifies that the Add method successfully adds a new campaign to the repository.
+        /// </summary>
         [Test]
         public async Task Add_Adds_New_Campaign()
         {
@@ -43,6 +45,9 @@ namespace CampaignManagementTool.Tests
             Assert.That(newCampaign.CampaignCode == retrievedCampaign.CampaignCode);
         }
 
+        /// <summary>
+        /// Verifies that adding a campaign with invalid rules throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public void Add_InvalidRules_ThrowsInvalidOperationException()
         {
@@ -61,6 +66,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Add(invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that adding a campaign with invalid rules URL throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public void Add_InvalidRulesUrl_ThrowsInvalidOperationException()
         {
@@ -79,6 +87,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Add(invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that adding a campaign with an invalid campaign code throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public void Add_InvalidCampaignCode_ThrowsInvalidOperationException()
         {
@@ -97,6 +108,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Add(invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that adding a campaign with an invalid affiliate code throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public void Add_InvalidAffiliateCode_ThrowsInvalidOperationException()
         {
@@ -115,6 +129,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Add(invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that adding a campaign with an invalid producer code throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public void Add_InvalidProducerCode_ThrowsInvalidOperationException()
         {
@@ -133,6 +150,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Add(invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that adding a campaign with an invalid expiry date throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public void Add_InvalidExpiryDate_ThrowsInvalidOperationException()
         {
@@ -151,6 +171,11 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Add(invalidCampaign));
         }
 
+        /// <summary>
+        /// Generates a string of a specified length.
+        /// </summary>
+        /// <param name="length">The length of the string to generate.</param>
+        /// <returns>A string of the specified length.</returns>
         private string GenerateString(int length) 
         {
             StringBuilder sb = new StringBuilder();

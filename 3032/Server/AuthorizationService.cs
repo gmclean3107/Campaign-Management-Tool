@@ -1,17 +1,31 @@
 ﻿using CampaignManagementTool.Server;
 using CampaignManagementTool.Server.Repositories.Interfaces;
 
+/// <summary>
+/// Service responsible for handling user authorization.
+/// </summary>
 public sealed class AuthorizationService
 {
     private readonly IUserRepository _userRepository;
     private readonly ICacheService _cacheService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizationService"/> class.
+    /// </summary>
+    /// <param name="userRepository">The repository for user-related operations.</param>
+    /// <param name="cacheService">The cache service for caching user roles.</param>
     public AuthorizationService(IUserRepository userRepository, ICacheService cacheService)
     {
         _userRepository = userRepository;
         _cacheService = cacheService;
     }
 
+    /// <summary>
+    /// Retrieves the roles assigned to a user identified by their identity ID.
+    /// </summary>
+    /// <param name="identityId">The identity ID of the user.</param>
+    /// <param name="name">The name of the user.</param>
+    /// <returns>A list of roles assigned to the user.</returns>
     public async Task<List<Role>> GetRolesForUserAsync(string identityId, string? name = null)
     {
         string cacheKey = $"auth:roles-{identityId}";

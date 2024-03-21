@@ -5,15 +5,28 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.JsonWebTokens;
 
+
+/// <summary>
+/// Implements a custom claims transformation to add roles to the claims principal based on user roles obtained from the authorization service.
+/// </summary>
 internal sealed class CustomClaimsTransformation : IClaimsTransformation
 {
     private readonly IServiceProvider _serviceProvider;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CustomClaimsTransformation"/> class.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider used to resolve dependencies.</param>
     public CustomClaimsTransformation(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
+    /// <summary>
+    /// Transforms the claims principal by adding roles based on the user's roles obtained from the authorization service.
+    /// </summary>
+    /// <param name="principal">The original claims principal.</param>
+    /// <returns>The transformed claims principal.</returns>
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         if (principal.Identity is not { IsAuthenticated: true } ||

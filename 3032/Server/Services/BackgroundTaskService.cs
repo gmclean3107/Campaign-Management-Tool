@@ -16,6 +16,10 @@ public class BackgroundTaskService : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
+    /// <summary>
+    /// Executes the check to see if a campaign needs to be deleted asynchronously.
+    /// </summary>
+    /// <param name="stoppingToken">The cancellation token.</param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
@@ -32,6 +36,10 @@ public class BackgroundTaskService : BackgroundService
         }
     }
 
+    /// <summary>
+    /// Checks the expiry of campaigns and updates their status accordingly.
+    /// </summary>
+    /// <param name="campaignService">The campaign service.</param>
     private async Task CheckCampaignExpiry(ICampaignService campaignService) 
     {
         var campaigns = await campaignService.GetAll();

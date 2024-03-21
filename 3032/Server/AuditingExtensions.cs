@@ -4,15 +4,32 @@ using CampaignManagementTool.Shared;
 
 namespace CampaignManagementTool.Server;
 
+/// <summary>
+/// Utility class for auditing operations.
+/// </summary>
 public class AuditingExtensions
 {
+
+    /// <summary>
+    /// Performs a deep copy of an object using JSON serialization.
+    /// </summary>
+    /// <typeparam name="T">The type of the object.</typeparam>
+    /// <param name="input">The object to be deep copied.</param>
+    /// <returns>A deep copy of the input object.</returns>
     public static T? DeepCopyJson<T>(T input)
     {
         var jsonString = JsonSerializer.Serialize(input);
         return JsonSerializer.Deserialize<T>(jsonString);
     }
-    
-       public static List<AuditLog.UpdateValues> GetDifferingProperties<TObj>(TObj value1, TObj value2)
+
+    /// <summary>
+    /// Retrieves the differing properties between two objects of the same type.
+    /// </summary>
+    /// <typeparam name="TObj">The type of the objects.</typeparam>
+    /// <param name="value1">The first object.</param>
+    /// <param name="value2">The second object.</param>
+    /// <returns>A list of differing properties along with their values.</returns>
+    public static List<AuditLog.UpdateValues> GetDifferingProperties<TObj>(TObj value1, TObj value2)
         {
             var type = value1?.GetType();
             var properties = type?.GetProperties();
@@ -57,7 +74,13 @@ public class AuditingExtensions
             return updatedFields;
         }
 
-        private static bool AreEqual(object? value1, object? value2)
+    /// <summary>
+    /// Determines if two objects are equal.
+    /// </summary>
+    /// <param name="value1">The first object.</param>
+    /// <param name="value2">The second object.</param>
+    /// <returns>True if the objects are equal, otherwise false.</returns>
+    private static bool AreEqual(object? value1, object? value2)
         {
             if (value1 == null && value2 == null)
             {
@@ -72,7 +95,12 @@ public class AuditingExtensions
             return value1.Equals(value2);
         }
 
-        private static bool IsComplexType(Type type)
+    /// <summary>
+    /// Determines if a type is a complex type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns>True if the type is a complex type, otherwise false.</returns>
+    private static bool IsComplexType(Type type)
         {
             return type is { IsPrimitive: false, IsValueType: false } && type != typeof(string);
         }

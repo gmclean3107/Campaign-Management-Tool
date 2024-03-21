@@ -19,17 +19,25 @@ public class MockCampaignRepository : ICampaignRepository
 {
     private readonly List<Campaign> _campaigns;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MockCampaignRepository"/> class.
+    /// </summary>
     public MockCampaignRepository()
     {
         _campaigns = GetFakeData();
     }
 
+    /// <summary>
+    /// Gets all campaigns.
+    /// </summary>
     public async Task<List<Campaign>> GetAll()
     {
         return _campaigns;
     }
 
-
+    /// <summary>
+    /// Adds a new campaign.
+    /// </summary>
     public async Task Add(Campaign campaign)
     {
         if (campaign == null) throw new ArgumentNullException(nameof(campaign));
@@ -43,11 +51,17 @@ public class MockCampaignRepository : ICampaignRepository
         }
     }
 
+    /// <summary>
+    /// Gets a campaign by its ID.
+    /// </summary>
     public async Task<Campaign?> GetById(string id)
     {
         return _campaigns.FirstOrDefault(c => c.CampaignCode == id);
     }
 
+    /// <summary>
+    /// Updates an existing campaign.
+    /// </summary>
     public async Task Update(string id,Campaign campaign)
     {
         if (campaign == null) throw new ArgumentNullException(nameof(campaign));
@@ -67,7 +81,9 @@ public class MockCampaignRepository : ICampaignRepository
         }
     }
 
- 
+    /// <summary>
+    /// Parses fake data from JSON file for testing.
+    /// </summary>
     public static List<Campaign> GetFakeData()
     {
         // Path to the JSON file containing test data
@@ -83,6 +99,9 @@ public class MockCampaignRepository : ICampaignRepository
         return campaigns;
     }
 
+    /// <summary>
+    /// Filters campaigns based on the provided criteria.
+    /// </summary>
     public Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort)
     {
         List<Campaign> filteredCampaigns = new();
@@ -185,6 +204,9 @@ public class MockCampaignRepository : ICampaignRepository
         return Task.FromResult(filteredCampaigns);
     }
 
+    /// <summary>
+    /// Exports all campaigns to a CSV file.
+    /// </summary>
     public Task<byte[]> ExportToCsv()
     {
         var response = _campaigns;
@@ -216,6 +238,9 @@ public class MockCampaignRepository : ICampaignRepository
         return null;
     }
 
+    /// <summary>
+    /// Exports filtered campaigns to a CSV file.
+    /// </summary>
     public Task<byte[]> ExportToCsvFiltered(string code, int filter, int sort)
     {
         var response = CampaignSearchFilter(code, filter, sort).Result;
@@ -247,8 +272,9 @@ public class MockCampaignRepository : ICampaignRepository
         return null;
     }
 
-
-
+    /// <summary>
+    /// Exports a single campaign to a CSV file.
+    /// </summary>
     public Task<byte[]> ExportToCsvSingle(string id)
     {
         var response = GetById(id);
@@ -283,6 +309,9 @@ public class MockCampaignRepository : ICampaignRepository
         return null;
     }
 
+    /// <summary>
+    /// Validates the input data for a campaign.
+    /// </summary>
     private bool ValidateInput(Campaign Model)
     {
         bool isValid = true;

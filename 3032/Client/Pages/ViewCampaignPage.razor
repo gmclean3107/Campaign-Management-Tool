@@ -68,7 +68,7 @@
     {
         _canAccess = await RolesService.HasRole(Roles.Viewer);
 
-        
+
         Model = await CampaignService.GetByIdAsync(Id);
 
         Model.ExpiryDays = DateTime.Parse(Model.ExpiryDays).Subtract(DateTime.Now.Date).TotalDays.ToString();
@@ -76,6 +76,10 @@
         await base.OnInitializedAsync();
     }
 
+    /// <summary>
+    /// Exports the campaign being viewed to a csv file.
+    /// </summary>
+    /// <returns></returns>
     private async Task ExportToCsvSingle()
     {
         byte[] csvData = await CampaignService.ExportToCsvSingleAsync(Id);
@@ -87,6 +91,9 @@
         }
     }
 
+    /// <summary>
+    /// Navigates to the history of the campaign being viewed.
+    /// </summary>
     private void ViewHistory()
     {
         NavigationManager.NavigateTo($"/ViewHistory/{Id}/View");

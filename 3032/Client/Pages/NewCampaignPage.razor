@@ -70,6 +70,9 @@ else
     private List<string> invalidFields;
     private bool showFields;
 
+    /// <summary>
+    /// Saves the new campaign.
+    /// </summary>
     private async Task OnSave()
     {
         invalidFields = new List<string>();
@@ -103,6 +106,10 @@ else
         }
     }
 
+    /// <summary>
+    /// Validates input data for the new campaign.
+    /// </summary>
+    /// <returns>True if input is valid; otherwise, false.</returns>
     private async Task<bool> ValidateInput()
     {
         bool isValid = true;

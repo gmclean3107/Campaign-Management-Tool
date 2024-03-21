@@ -10,16 +10,29 @@ using System.Text;
 namespace CampaignManagementTool.Server.Repositories
 {
 
+    /// <summary>
+    /// Repository for managing campaigns stored in Cosmos DB.
+    /// </summary>
     public class CosmosCampaignRepository : CosmosDbRepository<Campaign>, ICampaignRepository
     {
         private const string DatabaseId = "CampaignManagementTool";
         private const string ContainerId = "Campaigns";
 
-
+        /// <summary>
+        /// Constructs a new instance of <see cref="CosmosCampaignRepository"/>.
+        /// </summary>
+        /// <param name="configuration">The configuration instance.</param>
         public CosmosCampaignRepository(IConfiguration configuration) : base(configuration, DatabaseId, ContainerId)
         {
         }
-        
+
+        /// <summary>
+        /// Retrieves campaigns based on search filters.
+        /// </summary>
+        /// <param name="code">The search code.</param>
+        /// <param name="filter">The filter criteria.</param>
+        /// <param name="sort">The sorting criteria.</param>
+        /// <returns>The list of campaigns matching the search and filter criteria.</returns>
         public async Task<List<Campaign>> CampaignSearchFilter(string code, int filter, int sort)
         {
             string filterString = "";
@@ -58,7 +71,14 @@ namespace CampaignManagementTool.Server.Repositories
 
             return await GetFromQueryDefinition(query);
         }
-        
+
+        /// <summary>
+        /// Exports filtered campaigns to a CSV byte array.
+        /// </summary>
+        /// <param name="code">The search code.</param>
+        /// <param name="filter">The filter criteria.</param>
+        /// <param name="sort">The sorting criteria.</param>
+        /// <returns>The byte array containing the CSV data.</returns>
         public async Task<byte[]> ExportToCsvFiltered(string code, int filter, int sort)
         {
             var response = CampaignSearchFilter(code, filter, sort).Result;
@@ -89,7 +109,12 @@ namespace CampaignManagementTool.Server.Repositories
 
             return null;
         }
-        
+
+        /// <summary>
+        /// Exports a single campaign to a CSV byte array.
+        /// </summary>
+        /// <param name="id">The campaign ID.</param>
+        /// <returns>The byte array containing the CSV data.</returns>
         public Task<byte[]> ExportToCsvSingle(string id) 
         {
             var response = GetById(id).Result;
@@ -127,7 +152,11 @@ namespace CampaignManagementTool.Server.Repositories
         }
 
 
-
+        /// <summary>
+        /// Converts an <see cref="Campaign"/> instance to a <see cref="CosmosRecord{T}"/> instance.
+        /// </summary>
+        /// <param name="payload">The campaign payload.</param>
+        /// <returns>The Cosmos record containing the campaign payload.</returns>
         protected override CosmosRecord<Campaign> ToCosmosRecord(Campaign payload)
         {
             return new CosmosRecord<Campaign>()

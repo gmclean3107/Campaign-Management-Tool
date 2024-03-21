@@ -1,16 +1,12 @@
 ﻿using CampaignManagementTool.Server.Repositories;
 using CampaignManagementTool.Shared;
-using CsvHelper;
-using NUnit.Framework.Legacy;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CampaignManagementTool.Tests
 {
+    /// <summary>
+    /// Test class for validating the export functionality of the MockCampaignRepository.
+    /// </summary>
     [TestFixture]
     public class ExportToCsvTests
     {
@@ -22,7 +18,9 @@ namespace CampaignManagementTool.Tests
             _campaignRepository = new MockCampaignRepository();
         }
 
-
+        /// <summary>
+        /// Verifies that exporting all campaigns successfully exports all campaigns.
+        /// </summary>
         [Test]
         public async Task Export_All_Exports_All_Campaigns()
         {
@@ -43,7 +41,9 @@ namespace CampaignManagementTool.Tests
 
         }
 
-
+        /// <summary>
+        /// Verifies that exporting filtered campaigns successfully exports filtered campaigns.
+        /// </summary>
         [Test]
         public async Task Export_Filtered_Exports_Filtered_Campaigns()
         {
@@ -62,7 +62,9 @@ namespace CampaignManagementTool.Tests
             }
         }
 
-
+        /// <summary>
+        /// Verifies that exporting a single campaign successfully exports the selected campaign.
+        /// </summary>
         [Test]
         public async Task Export_Single_Exports_Selected_Campaigns()
         {
@@ -78,6 +80,11 @@ namespace CampaignManagementTool.Tests
             Assert.That(expectedString.Equals(actualString));
         }
 
+        /// <summary>
+        /// Helper method to parse the exported CSV data into a list of Campaign objects.
+        /// </summary>
+        /// <param name="csvBytes">The byte array containing the CSV data.</param>
+        /// <returns>A list of Campaign objects parsed from the CSV data.</returns>
         private List<Campaign> ReadExportedData(byte[] csvBytes)
         {
             string csvString = Encoding.UTF8.GetString(csvBytes);

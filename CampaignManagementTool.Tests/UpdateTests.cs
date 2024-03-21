@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CampaignManagementTool.Tests
 {
+    /// <summary>
+    /// Test class for validating the update functionality of the MockCampaignRepository.
+    /// </summary>
     [TestFixture]
     public class UpdateTests
     {
@@ -19,7 +22,9 @@ namespace CampaignManagementTool.Tests
             _campaignRepository = new MockCampaignRepository();
         }
 
-
+        /// <summary>
+        /// Verifies that updating an existing campaign modifies the campaign as expected.
+        /// </summary>
         [Test]
         public async Task Update_Updates_Existing_Campaign()
         {
@@ -43,7 +48,9 @@ namespace CampaignManagementTool.Tests
             Assert.That(updatedCampaign.RequiresApproval == retrievedCampaign.RequiresApproval && retrievedCampaign.RequiresApproval != existingCampaign.RequiresApproval);
         }
 
-
+        /// <summary>
+        /// Verifies that attempting to update a campaign with invalid rules throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public async Task Update_InvalidRules_ThrowsInvalidOperationException()
         {
@@ -63,6 +70,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Update(existingCampaign.CampaignCode, invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that attempting to update a campaign with an invalid rules URL throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public async Task Update_InvalidRulesUrl_ThrowsInvalidOperationException()
         {
@@ -82,6 +92,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Update(existingCampaign.CampaignCode, invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that attempting to update a campaign with an invalid campaign code throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public async Task Update_InvalidCampaignCode_ThrowsInvalidOperationException()
         {
@@ -101,6 +114,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Update(existingCampaign.CampaignCode, invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that attempting to update a campaign with an invalid affiliate code throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public async Task Update_InvalidAffiliateCode_ThrowsInvalidOperationException()
         {
@@ -120,6 +136,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Update(existingCampaign.CampaignCode, invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that attempting to update a campaign with an invalid producer code throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public async Task Update_InvalidProducerCode_ThrowsInvalidOperationException()
         {
@@ -139,6 +158,9 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Update(existingCampaign.CampaignCode, invalidCampaign));
         }
 
+        /// <summary>
+        /// Verifies that attempting to update a campaign with an invalid expiry date throws an InvalidOperationException.
+        /// </summary>
         [Test]
         public async Task Update_InvalidExpiryDate_ThrowsInvalidOperationException()
         {
@@ -158,6 +180,11 @@ namespace CampaignManagementTool.Tests
             Assert.ThrowsAsync<InvalidOperationException>(async () => await _campaignRepository.Update(existingCampaign.CampaignCode, invalidCampaign));
         }
 
+        /// <summary>
+        /// Generates a string of a specified length.
+        /// </summary>
+        /// <param name="length">The length of the string to generate.</param>
+        /// <returns>A string of the specified length.</returns>
         private string GenerateString(int length)
         {
             StringBuilder sb = new StringBuilder();

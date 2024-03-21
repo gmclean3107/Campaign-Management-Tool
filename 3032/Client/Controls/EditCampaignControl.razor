@@ -51,6 +51,10 @@
     [Parameter]
     public EventCallback<Campaign> ExportToCsvSingle { get; set; }
 
+    /// <summary>
+    /// Calls function to update the campaign being viewed with any new data that has been input.
+    /// </summary>
+    /// <returns></returns>
     private async Task Submit()
     {
         if (OnSave.HasDelegate)
@@ -59,6 +63,10 @@
         }
     }
 
+    /// <summary>
+    /// Calls function to export the current campaign to a csv file.
+    /// </summary>
+    /// <returns></returns>
     private async Task ExportToCsv()
     {
         if (ExportToCsvSingle.HasDelegate)
