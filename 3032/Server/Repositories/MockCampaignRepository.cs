@@ -275,25 +275,27 @@ public class MockCampaignRepository : ICampaignRepository
     /// <summary>
     /// Exports a single campaign to a CSV file.
     /// </summary>
-    public Task<byte[]> ExportToCsvSingle(string id)
+    public async Task<byte[]> ExportToCsvSingle(string id)
     {
-        var response = GetById(id);
-
+        var response = await GetById(id);
+        List<Campaign> campaigns = new List<Campaign>();
+        
+        Console.WriteLine("got here");
         try
         {
             if (response != null)
             {
+                campaigns.Add(response);
                 using (var memoryStream = new MemoryStream())
                 using (var writer = new StreamWriter(memoryStream, Encoding.UTF8))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
-                    csv.WriteHeader<Campaign>();
-                    csv.NextRecord();
-
-                    csv.WriteRecord(response);
+                    
+                    csv.WriteRecords(campaigns);
+                    
                     writer.Flush();
-
-                    return Task.FromResult(memoryStream.ToArray());
+                   
+                    return memoryStream.ToArray();
                 }
             }
             else
