@@ -82,24 +82,30 @@ public class CampaignService : ICampaignService
         //Update the record
         await _repo.Update(id,campaign);
 
-        var userId = _userContext.IdentityId;
-        var userName = _userContext.Name;
+        try
+        {
+            var userId = _userContext.IdentityId;
+            var userName = _userContext.Name;
 
-        var userInfo = new UserInfo()
+            var userInfo = new UserInfo()
+            {
+                Id = userId,
+                Name = userName
+            };
+
+            //Add the Auditing Information
+            await _auditRepo.Add(new AuditLog()
+            {
+                Id = Guid.NewGuid(),
+                CampaignCode = id,
+                Updates = updatedFields,
+                AddedDate = DateTime.UtcNow,
+                AddedBy = userInfo
+            });
+        }catch(Exception ex) 
         {
-            Id = userId,
-            Name = userName
-        };
-        
-        //Add the Auditing Information
-        await _auditRepo.Add(new AuditLog()
-        {
-            Id = Guid.NewGuid(),
-            CampaignCode = id,
-            Updates = updatedFields,
-            AddedDate = DateTime.UtcNow,
-            AddedBy = userInfo
-        });
+            Console.WriteLine("No UserContext");
+        }
     }
 
     /// <summary>

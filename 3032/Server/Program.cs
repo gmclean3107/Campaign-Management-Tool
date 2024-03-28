@@ -30,7 +30,7 @@ builder.Services.AddSingleton<ICacheService, CacheService>();
 builder.Services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
 builder.Services.AddScoped<AuthorizationService>();
 builder.Services.AddSingleton<IUserRepository, CosmosUserRepository>();
-//builder.Services.AddHostedService<BackgroundTaskService>();
+builder.Services.AddHostedService<BackgroundTaskService>();
 
 var app = builder.Build();
 
